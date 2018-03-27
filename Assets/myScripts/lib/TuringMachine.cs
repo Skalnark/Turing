@@ -21,7 +21,7 @@ using UnityEngine;
   
  namespace TM{
 
- 	static class Constants
+ 	public static class Constants
 	{
     	public const int NORMAL = 0;
     	public const int FINAL = 1;
@@ -67,25 +67,25 @@ using UnityEngine;
 	*/
 	class GamaFunction
 	{
-	    private int in, out; //the In and Out characters for our function
+	    private int input, output; //the In and Out characters for our function
 	    private bool side; //True for Right, False for Left
 	    private State state; //The state tha will be called by our function
 
 	    //default constructor
-	    public GamaFunction(int in, int out, State state, bool side){
-	    	this.in = in;
-	    	this.out = out;
+	    public GamaFunction(int input, int output, State state, bool side){
+	    	this.input = input;
+	    	this.output = output;
 	    	this.state = state;
 	    	this.side = side;
 	    }
 
 	    //Getters and setters
 	    public int read(){
-	    	return in;
+	    	return input;
 	    }
 
 	    public int write(){
-	    	return out;
+	    	return output;
 	    }
 
 	    public bool goTo(){
@@ -103,15 +103,14 @@ using UnityEngine;
 	class State
 	{
 	    private GamaFunction[] func; //Will hold the transactional functions for this state
-	    private stateIdentity;
+	    private int stateIdentity;
 
-	    public State(GamaFunction[] funcs){
-	    	func = new GamaFunction[funcs.length()]();
-	    	func = funcs;
-	    	identity = NORMAL; //The state will aways be declared as a normal state
+	    public State(GamaFunction[] func){
+	    	this.func = func;
+	    	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
 	    }
 
-	    public bool defineIdentity(int i){
+	    public void defineIdentity(int i){
 	    	stateIdentity = i;
 	    }
 
@@ -119,8 +118,8 @@ using UnityEngine;
 	    	return stateIdentity;
 	    }
 
-	    public GamaFunction[] function(){
-	    	return func;
+	    public GamaFunction function(int n){
+	    	return func[n];
 	    }
 
 	    //So this method will process any input til it reach
@@ -133,20 +132,23 @@ using UnityEngine;
 	    					int n //The number for the recursivity function
 						   )
 		{
-			//If the current function have an output for the input
-	    	if(state.function[n].read() == tape[index]){ 
-	    		//TODO process the input
-	    		process(tape[], index, state.function[n].nextState(), 0); //This will run the next process
-	    	}
-	    	else if(input == 0){
-	    		if(state.identity == FINAL)
-	    			//TODO accept
-	    		else
-	    			//TODO reject
-	    	}
-	    	else{
-	    		process(tape[], index, state, n+1); //seek on the next function
-	    	}
+            //If the current function have an output for the input
+            if (state.function(n).read() == tape[index]) {
+                //TODO process the input
+                process(tape, index, state.function(n).nextState(), 0); //This will run the next process
+            }
+            else if (tape[index] == 0) {
+                if (state.identity() == Constants.FINAL)
+                {
+                    //TODO accept
+                }
+                else {
+                    //TODO reject
+                }
+            }
+            else {
+                process(tape, index, state, n + 1); //seek on the next function
+            }
 	    }
 	}
 

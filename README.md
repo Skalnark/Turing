@@ -1,8 +1,12 @@
-# Turing Machines 
+ï»¿# Turing Machines 
 
 (Precismos de um nome pro software)
 
-## Resumo
+## TODO List
 
-O projeto consiste em criar uma simulação de uma máquina de turing universal, utilizando um conceito gráfico de máquina de turing (com a fita de entrada, o cabeçote de leitura e blablabla). 
-No momento, vamos definir como prioridade apenas a representação gráfica da máquina funcionando com a descrição de máquina de turing mesmo. Em breve a gente pensa em um conversor e na parte didática do programa.
+- O script TuringMachine.cs Ã© o foco do projeto no momento, sem ele nÃ£o rola! Escrevam de forma legÃ­vel e **comentem**!
+- A ordem de escrita (do cÃ³digo) Ã©:
+	1. Alfabeto âœ“
+	2. FunÃ§Ã£o de transiÃ§Ã£o
+	3. Estado
+	4. MÃ¡quina de Turing

@@ -26,6 +26,8 @@
 
 # Unity3D generated meta files
 /*.pidb.meta
+/[Aa]ssets/myScripts/*.meta
+/[Aa]ssets/myScripts/lib/*.meta
 
 # Unity3D Generated File On Crash Reports
 /sysinfo.txt

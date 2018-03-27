@@ -18,10 +18,20 @@ using UnityEngine;
  * 
  */
 
-  /* The following class is the tape's alphabet: 
-   * A generic class that will hold any alphabet
-   * necessary for the simulated Turing Machine.
-   */
+  
+ namespace TM{
+
+ 	static class Constants
+	{
+    	public const int NORMAL = 0;
+    	public const int FINAL = 1;
+    	public const int INITIAL = 2;
+	}
+     
+   /* The following class is the tape's alphabet: 
+    * A generic class that will hold any alphabet
+    * necessary for the simulated Turing Machine.
+    */
 	class Alphabet
 	{
 	    private Dictionary<int, char> alph; ///O ETeimoso
@@ -50,24 +60,94 @@ using UnityEngine;
 	    }
 	}
 
-	/*
-	* the following class holds the generic class
+   /* The following class holds the generic class
 	* that works as the transactional function for
 	* the TM work. It will be part of the State
 	* class.
 	*/
 	class GamaFunction
 	{
-	    //TODO Transactional Function
+	    private int in, out; //the In and Out characters for our function
+	    private bool side; //True for Right, False for Left
+	    private State state; //The state tha will be called by our function
+
+	    //default constructor
+	    public GamaFunction(int in, int out, State state, bool side){
+	    	this.in = in;
+	    	this.out = out;
+	    	this.state = state;
+	    	this.side = side;
+	    }
+
+	    //Getters and setters
+	    public int read(){
+	    	return in;
+	    }
+
+	    public int write(){
+	    	return out;
+	    }
+
+	    public bool goTo(){
+	    	return side;
+	    }
+	    public State nextState(){
+	    	return state;
+	    }
 	}
 
-	/* The following class simulates the states of our TM. 
+   /* The following class simulates the states of our TM. 
 	* It will have the transactional functions and a 
 	* indicator if it is a final or acceptance state.
 	*/
 	class State
 	{
-	    //TODO States
+	    private GamaFunction[] func; //Will hold the transactional functions for this state
+	    private stateIdentity;
+
+	    public State(GamaFunction[] funcs){
+	    	func = new GamaFunction[funcs.length()]();
+	    	func = funcs;
+	    	identity = NORMAL; //The state will aways be declared as a normal state
+	    }
+
+	    public bool defineIdentity(int i){
+	    	stateIdentity = i;
+	    }
+
+	    public int identity(){
+	    	return stateIdentity;
+	    }
+
+	    public GamaFunction[] function(){
+	    	return func;
+	    }
+
+	    //So this method will process any input til it reach
+	    //the last symbol from the input
+	    //we'll need to re-indent the code
+	    public void process(
+	    					int[] tape, //the array of keys for the hash of our tape
+	    					int index, //the current symbol to be processed
+	    					State state, //the current TM's state
+	    					int n //The number for the recursivity function
+						   )
+		{
+			//If the current function have an output for the input
+	    	if(state.function[n].read() == tape[index]){ 
+	    		//TODO process the input
+	    		process(tape[], index, state.function[n].nextState(), 0); //This will run the next process
+	    	}
+	    	else if(input == 0){
+	    		if(state.identity == FINAL)
+	    			//TODO accept
+	    		else
+	    			//TODO reject
+	    	}
+	    	else{
+	    		process(tape[], index, state, n+1); //seek on the next function
+	    	}
+	    }
 	}
 
 	/* This is the last class for our TM. It will hold all
@@ -76,5 +156,7 @@ using UnityEngine;
 	*/
 	class TuringMachine
 	{
+		State[] states;
 	    //TODO Principal Class
 	}
+}

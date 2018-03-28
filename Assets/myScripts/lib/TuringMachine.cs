@@ -26,6 +26,9 @@ using UnityEngine;
     	public const int NORMAL = 0;
     	public const int FINAL = 1;
     	public const int INITIAL = 2;
+
+        //This last one is for the alphabet key
+        public const int WHITESPACE = 0;
 	}
      
    /* The following class is the tape's alphabet: 
@@ -58,6 +61,11 @@ using UnityEngine;
 	        alph.TryGetValue(n, out value);
 	        return value;
 	    }
+
+        public int length()
+        {
+            return index;
+        }
 	}
 
    /* The following class holds the generic class
@@ -79,7 +87,6 @@ using UnityEngine;
 	    	this.side = side;
 	    }
 
-	    //Getters and setters
 	    public int read(){
 	    	return input;
 	    }
@@ -124,12 +131,12 @@ using UnityEngine;
 
 	    //So this method will process any input til it reach
 	    //the last symbol from the input
-	    //we'll need to re-indent the code
+	    ///we'll need to re-indent the code
 	    public void process(
-	    					int[] tape, //the array of keys for the hash of our tape
-	    					int index, //the current symbol to be processed
-	    					State state, //the current TM's state
-	    					int n //The number for the recursivity function
+	    					int[] tape, ///the array of keys for the hash of our tape
+	    					int index, ///the current symbol to be processed
+	    					State state, ///the current TM's state
+	    					int n ///The number for the recursivity function
 						   )
 		{
             //If the current function have an output for the input
@@ -159,6 +166,48 @@ using UnityEngine;
 	class TuringMachine
 	{
 		State[] states;
-	    //TODO Principal Class
+        Alphabet alph;
+
+        public bool searchForElement(int n, char c)
+        {
+            if (alph.getSymbol(n) == c) return true;
+            else return false;
+        }
+
+        public void defineAlphabet(string s)
+        {
+
+        }
+        //This function will map the symbols on their respective keys on our hash,
+        //so we'll be able to use the alphabet's hash numbers instead of their symbols
+        public string setInputFormat(string s)
+        {
+            char[] charInput;
+            charInput = s.ToCharArray();
+
+            int[] normalInput = new int[charInput.Length+1];
+
+            for (int j = 0; j < charInput.Length; j++)
+            {
+                bool notFound = true;
+
+                for (int i = 1; i <= alph.length(); i++)
+                {
+                    if (charInput[j] == alph.getSymbol(i))
+                    {
+                        normalInput[normalInput.Length] = i;
+                        notFound = false;
+                        break;
+                    }
+                }
+
+                if (notFound) return "symbol not found"; //breaks the function to return the error
+
+            }
+            normalInput[charInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
+            return "done!";
+        }
+
+
 	}
 }

@@ -131,13 +131,7 @@ using UnityEngine;
 
 	    //So this method will process any input til it reach
 	    //the last symbol from the input
-	    ///we'll need to re-indent the code
-	    public void process(
-	    					int[] tape, ///the array of keys for the hash of our tape
-	    					int index, ///the current symbol to be processed
-	    					State state, ///the current TM's state
-	    					int n ///The number for the recursivity function
-						   )
+	    public void process(int[] tape, int index, State state, int n )
 		{
             //If the current function have an output for the input
             if (state.function(n).read() == tape[index]) {
@@ -166,7 +160,7 @@ using UnityEngine;
 	class TuringMachine
 	{
 		State[] states;
-        Alphabet alph;
+        Alphabet alph = new Alphabet();
 
         public bool searchForElement(int n, char c)
         {
@@ -174,9 +168,33 @@ using UnityEngine;
             else return false;
         }
 
-        public void defineAlphabet(string s)
+        public string defineAlphabet(string s)
         {
+            char[] input = s.ToCharArray();
 
+            //to check if there's any duplicated symbol on the string
+            for (int i = 0; i < input.Length; i++)
+            {
+                for (int j = 0; j < input.Length; j++)
+                {
+                    if (input[i] == input[j])
+                    {
+                        if (i != j)
+                        {
+                            return "duplicated symbol";
+                        }
+                    }
+                }
+
+                alph.insertSymbol(input[i]);
+            }
+
+            for(int i = 0; i < input.Length; i++)
+            {
+                alph.insertSymbol(input[i]);
+            }
+
+            return "alphabet successfully created";
         }
         //This function will map the symbols on their respective keys on our hash,
         //so we'll be able to use the alphabet's hash numbers instead of their symbols
@@ -207,7 +225,6 @@ using UnityEngine;
             normalInput[charInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
             return "done!";
         }
-
 
 	}
 }

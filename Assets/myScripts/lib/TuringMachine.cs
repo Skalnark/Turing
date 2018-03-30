@@ -131,7 +131,7 @@ using UnityEngine;
 
 	    //So this method will process any input til it reach
 	    //the last symbol from the input
-	    public void process(int[] tape, int index, State state, int n )
+	    public void process(string tape, int index, State state, int n )
 		{
             //If the current function have an output for the input
             if (state.function(n).read() == tape[index]) {
@@ -167,7 +167,7 @@ using UnityEngine;
             if (alph.getSymbol(n) == c) return true;
             else return false;
         }
-
+        //This function will set the alphabet to the required patterns
         public string defineAlphabet(string s)
         {
             char[] input = s.ToCharArray();
@@ -189,11 +189,6 @@ using UnityEngine;
                 alph.insertSymbol(input[i]);
             }
 
-            for(int i = 0; i < input.Length; i++)
-            {
-                alph.insertSymbol(input[i]);
-            }
-
             return "alphabet successfully created";
         }
         //This function will map the symbols on their respective keys on our hash,
@@ -203,7 +198,7 @@ using UnityEngine;
             char[] charInput;
             charInput = s.ToCharArray();
 
-            int[] normalInput = new int[charInput.Length+1];
+            int[] normalInput = new int[charInput.Length + 1];
 
             for (int j = 0; j < charInput.Length; j++)
             {
@@ -223,7 +218,26 @@ using UnityEngine;
 
             }
             normalInput[charInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
-            return "done!";
+            return charInput + "";
+        }
+        //to process the input tape
+        public void startMachine(string tape)
+        {
+            tape = setInputFormat(tape);
+            State initial = null;
+            State final = null;
+
+
+            foreach(State q in states)
+            {
+                if (q.identity() == Constants.INITIAL) initial = q;
+
+                else if (q.identity() == Constants.FINAL) final = q;
+
+                if (final != null && initial != null) break;
+            }
+
+            initial.process(tape, 0, initial, 0);
         }
 
 	}

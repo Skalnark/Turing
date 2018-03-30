@@ -6,7 +6,7 @@
 
 - O script TuringMachine.cs está quase completo, precisa apenas das funções da própria unity
 
-#### O problema gora é outro.
+#### O problema agora é outro.
 
 - Programas indecidíveis vão travar
 - Utilizar história da computação não é garantia de sucesso

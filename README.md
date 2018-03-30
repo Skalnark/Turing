@@ -4,9 +4,11 @@
 
 ## TODO List
 
-- O script TuringMachine.cs é o foco do projeto no momento, sem ele não rola! Escrevam de forma legível e **comentem**!
-- A ordem de escrita (do código) é:
-	1. Alfabeto ✓
-	2. Função de transição
-	3. Estado
-	4. Máquina de Turing
+- O script TuringMachine.cs está quase completo, precisa apenas das funções da própria unity
+
+#### O problema gora é outro.
+
+- Programas indecidíveis vão travar
+- Utilizar história da computação não é garantia de sucesso
+- Precisamos descobrir se a máquina pode ser processada! 
+- Boa sorte!

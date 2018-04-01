@@ -12,3 +12,7 @@
 - Utilizar história da computação não é garantia de sucesso
 - Precisamos descobrir se a máquina pode ser processada! 
 - Boa sorte!
+
+#### Parte gráfica
+
+- Precisamos de algum modelo pra representar a máquina.

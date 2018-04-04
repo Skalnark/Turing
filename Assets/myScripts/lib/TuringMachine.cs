@@ -101,7 +101,17 @@ using UnityEngine;
 	    public State nextState(){
 	    	return state;
 	    }
-	}
+
+
+        public string funcDescription()
+        {
+            string description = null;
+
+            description = input + ";" + output + ";" + side + ";" + state.name();
+
+            return description;
+        }
+    }
 
    /* The following class simulates the states of our TM. 
 	* It will have the transactional functions and a 
@@ -109,10 +119,12 @@ using UnityEngine;
 	*/
 	class State
 	{
+        private string stateName;
 	    private GamaFunction[] func; //Will hold the transactional functions for this state
 	    private int stateIdentity;
 
-	    public State(GamaFunction[] func){
+	    public State(GamaFunction[] func, string s){
+            stateName = s;
 	    	this.func = func;
 	    	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
 	    }
@@ -121,6 +133,15 @@ using UnityEngine;
 	    	stateIdentity = i;
 	    }
 
+        public void setName(string n)
+        {
+            stateName = n;
+        }
+        
+        public string name()
+        {
+            return stateName;
+        }
 	    public int identity(){
 	    	return stateIdentity;
 	    }
@@ -128,6 +149,10 @@ using UnityEngine;
 	    public GamaFunction function(int n){
 	    	return func[n];
 	    }
+        public int numberOfFunctions()
+        {
+            return func.Length;
+        }
 
 	    //So this method will process any input til it reach
 	    //the last symbol from the input
@@ -240,5 +265,48 @@ using UnityEngine;
             initial.process(tape, 0, initial, 0);
         }
 
+        //to save the TM's description
+        public void saveMachine()
+        {
+            
+        }
+
+        public string toString()
+        {
+            string description = "";
+            string initialState = null;
+            string finalState = null;
+
+            for(int i = 0; i < alph.length(); i++)
+            {
+                description += alph.getSymbol(i) +" ,";
+            }
+            description += "#";
+
+            foreach (State s in states)
+            {
+                description = description + s.name() + " ,";
+
+                if (s.identity() == Constants.INITIAL)
+                    initialState = s.name();
+                if (s.identity() == Constants.FINAL)
+                    finalState = s.name();
+            }
+
+            description += "#";
+
+            foreach(State s in states)
+            {
+                description += s.name() + ": ";
+                for(int i = 0; i < s.numberOfFunctions(); i++)
+                {
+                    description += "("+ s.function(i).funcDescription() + "); ";
+                }
+            }
+
+            description += "#" + initialState + "#" + finalState;
+
+            return description;
+        }
 	}
 }

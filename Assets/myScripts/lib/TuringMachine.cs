@@ -73,41 +73,41 @@ using UnityEngine;
 	* the TM work. It will be part of the State
 	* class.
 	*/
-	class GamaFunction
+	class DeltaFunction
 	{
 	    private int input, output; //the In and Out characters for our function
-	    private bool side; //True for Right, False for Left
+	    private string side; //True for Right, False for Left
 	    private State state; //The state tha will be called by our function
 
 	    //default constructor
-	    public GamaFunction(int input, int output, State state, bool side){
+	    public DeltaFunction(int input, int output, State state, string side){
 	    	this.input = input;
 	    	this.output = output;
 	    	this.state = state;
 	    	this.side = side;
 	    }
 
-	    public int read(){
+	    public int getInput(){
 	    	return input;
 	    }
 
-	    public int write(){
+	    public int getOutput(){
 	    	return output;
 	    }
 
-	    public bool goTo(){
+	    public string getSide(){
 	    	return side;
 	    }
-	    public State nextState(){
+	    public State getNextState(){
 	    	return state;
 	    }
 
 
-        public string funcDescription()
+        public string toString()
         {
             string description = null;
 
-            description = input + ";" + output + ";" + side + ";" + state.name();
+            description = input + "," + output + "," + side + "," + state.name();
 
             return description;
         }
@@ -120,11 +120,11 @@ using UnityEngine;
 	class State
 	{
         private string stateName;
-	    private GamaFunction[] func; //Will hold the transactional functions for this state
+	    private DeltaFunction[] func; //Will hold the transactional functions for this state
 	    private int stateIdentity;
 
-	    public State(GamaFunction[] func, string s){
-            stateName = s;
+	    public State(DeltaFunction[] func, string stateName){
+            this.stateName = stateName;
 	    	this.func = func;
 	    	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
 	    }
@@ -146,7 +146,7 @@ using UnityEngine;
 	    	return stateIdentity;
 	    }
 
-	    public GamaFunction function(int n){
+	    public DeltaFunction function(int n){
 	    	return func[n];
 	    }
         public int numberOfFunctions()
@@ -159,9 +159,9 @@ using UnityEngine;
 	    public void process(string tape, int index, State state, int n )
 		{
             //If the current function have an output for the input
-            if (state.function(n).read() == tape[index]) {
+            if (state.function(n).getInput() == tape[index]) {
                 //TODO process the input
-                process(tape, index, state.function(n).nextState(), 0); //This will run the next process
+                process(tape, index, state.function(n).getNextState(), 0); //This will run the next process
             }
             else if (tape[index] == 0) {
                 if (state.identity() == Constants.FINAL)
@@ -273,7 +273,7 @@ using UnityEngine;
 
         public string toString()
         {
-            string description = "";
+            string description = null;
             string initialState = null;
             string finalState = null;
 
@@ -292,19 +292,22 @@ using UnityEngine;
                 if (s.identity() == Constants.FINAL)
                     finalState = s.name();
             }
+            
+            description += "#" + initialState + "#" + finalState + "#";
 
-            description += "#";
-
-            foreach(State s in states)
+            foreach (State s in states)
             {
                 description += s.name() + ": ";
                 for(int i = 0; i < s.numberOfFunctions(); i++)
                 {
-                    description += "("+ s.function(i).funcDescription() + "); ";
+                    description += "("+ s.function(i).toString() + ")";
+
+                    if (i != s.numberOfFunctions() - 1)
+                        description += ", ";
+
+                    else description += "; ";
                 }
             }
-
-            description += "#" + initialState + "#" + finalState;
 
             return description;
         }

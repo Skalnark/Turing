@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,7 +17,6 @@ using UnityEngine;
  * https://github.com/Skalnark/TuringMachines
  * 
  */
-
   
  namespace TM{
 
@@ -37,27 +36,27 @@ using UnityEngine;
     */
 	class Alphabet
 	{
-	    private Dictionary<int, char> alph; ///O ETeimoso
+	    private Dictionary<int, string> alph; ///O ETeimoso
 	    private int index;
 
 	    public Alphabet()
 	    {
-	        alph = new Dictionary<int, char>();
+	        alph = new Dictionary<int, string>();
 	        //our "blank character" will be aways saved with key = 0
-	        alph.Add(0, ' ');
+	        alph.Add(0, " ");
 	        index = 0;
 	    }
 
 	    //To insert a new symbol and increment the lastKey
-	    public void insertSymbol(char c)
+	    public void insertSymbol(string c)
 	    {
 	        alph.Add(++index, c);
 	    }
 
 	    //To get the symbol through the key
-	    public char getSymbol(int n)
+	    public string getSymbol(int n)
 	    {
-	        char value;
+	        string value;
 	        alph.TryGetValue(n, out value);
 	        return value;
 	    }
@@ -187,7 +186,7 @@ using UnityEngine;
 		State[] states;
         Alphabet alph = new Alphabet();
 
-        public bool searchForElement(int n, char c)
+        public bool searchForElement(int n, string c)
         {
             if (alph.getSymbol(n) == c) return true;
             else return false;
@@ -195,7 +194,8 @@ using UnityEngine;
         //This function will set the alphabet to the required patterns
         public string defineAlphabet(string s)
         {
-            char[] input = s.ToCharArray();
+            char[] separators = { ' ', ','};
+            string[] input = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             //to check if there's any duplicated symbol on the string
             for (int i = 0; i < input.Length; i++)
@@ -220,18 +220,18 @@ using UnityEngine;
         //so we'll be able to use the alphabet's hash numbers instead of their symbols
         public string setInputFormat(string s)
         {
-            char[] charInput;
-            charInput = s.ToCharArray();
+            char[] separators = { ' ', ',' };
+            string[] stringInput = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-            int[] normalInput = new int[charInput.Length + 1];
+            int[] normalInput = new int[stringInput.Length + 1];
 
-            for (int j = 0; j < charInput.Length; j++)
+            for (int j = 0; j < stringInput.Length; j++)
             {
                 bool notFound = true;
 
                 for (int i = 1; i <= alph.length(); i++)
                 {
-                    if (charInput[j] == alph.getSymbol(i))
+                    if (stringInput[j] == alph.getSymbol(i))
                     {
                         normalInput[normalInput.Length] = i;
                         notFound = false;
@@ -242,9 +242,10 @@ using UnityEngine;
                 if (notFound) return "symbol not found"; //breaks the function to return the error
 
             }
-            normalInput[charInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
-            return charInput + "";
+            normalInput[stringInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
+            return stringInput + "";
         }
+
         //to process the input tape
         public void startMachine(string tape)
         {
@@ -271,6 +272,8 @@ using UnityEngine;
             
         }
 
+        //This function is suposed to process all the elements from our TM and
+        //give us the normalized description.
         public string toString()
         {
             string description = null;

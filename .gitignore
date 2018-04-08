@@ -4,7 +4,6 @@
 /[Oo]bj/
 /[Bb]uild/
 /[Bb]uilds/
-/Assets/AssetStoreTools*
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -26,8 +25,12 @@
 
 # Unity3D generated meta files
 /*.pidb.meta
+/[Aa]ssets/*.meta
 /[Aa]ssets/myScripts/*.meta
 /[Aa]ssets/myScripts/lib/*.meta
+/[Aa]ssets/myGraphics/Materials/*.meta
+/[Aa]ssets/myGraphics/Textures/*.meta
+
 
 # Unity3D Generated File On Crash Reports
 /sysinfo.txt

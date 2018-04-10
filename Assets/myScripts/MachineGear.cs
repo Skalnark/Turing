@@ -23,7 +23,7 @@ using UnityEngine;
  *dance and make weird noises when 
  *processing the tape
  */
-public class MachineGear: Monobehavior{
+public class MachineGear : MonoBehaviour {
 
 	public GameObject cellTapePrefab;
 	public GameObject machine; 
@@ -41,9 +41,9 @@ public class MachineGear: Monobehavior{
 
 	public void onSymbolInsert(GameObject infiniteTape, int key){
 		//to make our "infinite" tape look really endless like Dream of Them
-		infiniteTape.transform.size += new Vector3(1.5f, 0, 0);
+		infiniteTape.transform.localScale += new Vector3(1.5f, 0, 0);
 
-		GameObject cellTape = invoke(cellTapePrefab);
+		GameObject cellTape = Instantiate(cellTapePrefab);
 		cellTape.GetComponent<TextMesh>().text = "" + alph.getSymbol(key);
 	}
 }

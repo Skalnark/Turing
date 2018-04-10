@@ -23,7 +23,7 @@ using UnityEngine;
 * the TM work. It will be part of the State
 * class.
 */
-class DeltaFunction
+public class DeltaFunction
 {
     private int input, output; //the In and Out characters for our function
     private string side; //True for Right, False for Left

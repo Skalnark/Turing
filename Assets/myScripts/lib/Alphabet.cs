@@ -18,7 +18,7 @@ using UnityEngine;
  * 
  */
   
-class Alphabet
+public class Alphabet
 {
     private Dictionary<int, string> alph; ///O ETeimoso
     private int index;

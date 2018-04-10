@@ -1,4 +1,4 @@
-	public static class Constants
+public static class Constants
 {
 	public const int NORMAL = 0;
 	public const int FINAL = 1;

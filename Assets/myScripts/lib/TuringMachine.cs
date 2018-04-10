@@ -22,7 +22,7 @@ using UnityEngine;
 * the states instances and his functions. This is the
 * principal class on this file.
 */
-class TuringMachine
+public class TuringMachine
 {
 	State[] states;
     Alphabet alph = new Alphabet();
@@ -104,7 +104,7 @@ class TuringMachine
             if (final != null && initial != null) break;
         }
 
-        initial.process(tape, 0, initial, 0);
+        initial.process(tape, 0, initial, 0, 0);
     }
 
     //to save the TM's description

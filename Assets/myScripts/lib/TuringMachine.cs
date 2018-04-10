@@ -17,302 +17,142 @@ using UnityEngine;
  * https://github.com/Skalnark/TuringMachines
  * 
  */
-  
- namespace TM{
 
- 	public static class Constants
-	{
-    	public const int NORMAL = 0;
-    	public const int FINAL = 1;
-    	public const int INITIAL = 2;
+/* This is the last class for our TM. It will hold all
+* the states instances and his functions. This is the
+* principal class on this file.
+*/
+class TuringMachine
+{
+	State[] states;
+    Alphabet alph = new Alphabet();
 
-        //This last one is for the alphabet key
-        public const int WHITESPACE = 0;
-	}
-     
-   /* The following class is the tape's alphabet: 
-    * A generic class that will hold any alphabet
-    * necessary for the simulated Turing Machine.
-    */
-	class Alphabet
-	{
-	    private Dictionary<int, string> alph; ///O ETeimoso
-	    private int index;
+    public bool searchForElement(int n, string c)
+    {
+        if (alph.getSymbol(n) == c) return true;
+        else return false;
+    }
+    //This function will set the alphabet to the required patterns
+    public string defineAlphabet(string s)
+    {
+        char[] separators = { ' ', ','};
+        string[] input = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-	    public Alphabet()
-	    {
-	        alph = new Dictionary<int, string>();
-	        //our "blank character" will be aways saved with key = 0
-	        alph.Add(0, " ");
-	        index = 0;
-	    }
-
-	    //To insert a new symbol and increment the lastKey
-	    public void insertSymbol(string c)
-	    {
-	        alph.Add(++index, c);
-	    }
-
-	    //To get the symbol through the key
-	    public string getSymbol(int n)
-	    {
-	        string value;
-	        alph.TryGetValue(n, out value);
-	        return value;
-	    }
-
-        public int length()
+        //to check if there's any duplicated symbol on the string
+        for (int i = 0; i < input.Length; i++)
         {
-            return index;
+            for (int j = 0; j < input.Length; j++)
+            {
+                if (input[i] == input[j])
+                {
+                    if (i != j)
+                    {
+                        return "duplicated symbol";
+                    }
+                }
+            }
+
+            alph.insertSymbol(input[i]);
         }
-	}
 
-   /* The following class holds the generic class
-	* that works as the transactional function for
-	* the TM work. It will be part of the State
-	* class.
-	*/
-	class DeltaFunction
-	{
-	    private int input, output; //the In and Out characters for our function
-	    private string side; //True for Right, False for Left
-	    private State state; //The state tha will be called by our function
+        return "alphabet successfully created";
+    }
+    //This function will map the symbols on their respective keys on our hash,
+    //so we'll be able to use the alphabet's hash numbers instead of their symbols
+    public string setInputFormat(string s)
+    {
+        char[] separators = { ' ', ',' };
+        string[] stringInput = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-	    //default constructor
-	    public DeltaFunction(int input, int output, State state, string side){
-	    	this.input = input;
-	    	this.output = output;
-	    	this.state = state;
-	    	this.side = side;
-	    }
+        int[] normalInput = new int[stringInput.Length + 1];
 
-	    public int getInput(){
-	    	return input;
-	    }
-
-	    public int getOutput(){
-	    	return output;
-	    }
-
-	    public string getSide(){
-	    	return side;
-	    }
-	    public State getNextState(){
-	    	return state;
-	    }
-
-
-        public string toString()
+        for (int j = 0; j < stringInput.Length; j++)
         {
-            string description = null;
+            bool notFound = true;
 
-            description = input + "," + output + "," + side + "," + state.name();
+            for (int i = 1; i <= alph.length(); i++)
+            {
+                if (stringInput[j] == alph.getSymbol(i))
+                {
+                    normalInput[normalInput.Length] = i;
+                    notFound = false;
+                    break;
+                }
+            }
 
-            return description;
+            if (notFound) return "symbol not found"; //breaks the function to return the error
+
         }
+        normalInput[stringInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
+        return stringInput + "";
     }
 
-   /* The following class simulates the states of our TM. 
-	* It will have the transactional functions and a 
-	* indicator if it is a final or acceptance state.
-	*/
-	class State
-	{
-        private string stateName;
-	    private DeltaFunction[] func; //Will hold the transactional functions for this state
-	    private int stateIdentity;
+    //to process the input tape
+    public void startMachine(string tape)
+    {
+        tape = setInputFormat(tape);
+        State initial = null;
+        State final = null;
 
-	    public State(DeltaFunction[] func, string stateName){
-            this.stateName = stateName;
-	    	this.func = func;
-	    	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
-	    }
 
-	    public void defineIdentity(int i){
-	    	stateIdentity = i;
-	    }
-
-        public void setName(string n)
+        foreach(State q in states)
         {
-            stateName = n;
+            if (q.identity() == Constants.INITIAL) initial = q;
+
+            else if (q.identity() == Constants.FINAL) final = q;
+
+            if (final != null && initial != null) break;
+        }
+
+        initial.process(tape, 0, initial, 0);
+    }
+
+    //to save the TM's description
+    public void saveMachine()
+    {
+        
+    }
+
+    //This function is suposed to process all the elements from our TM and
+    //give us the normalized description.
+    public string toString()
+    {
+        string description = null;
+        string initialState = null;
+        string finalState = null;
+
+        for(int i = 0; i < alph.length(); i++)
+        {
+            description += alph.getSymbol(i) +" ,";
+        }
+        description += "#";
+
+        foreach (State s in states)
+        {
+            description = description + s.name() + " ,";
+
+            if (s.identity() == Constants.INITIAL)
+                initialState = s.name();
+            if (s.identity() == Constants.FINAL)
+                finalState = s.name();
         }
         
-        public string name()
+        description += "#" + initialState + "#" + finalState + "#";
+
+        foreach (State s in states)
         {
-            return stateName;
-        }
-	    public int identity(){
-	    	return stateIdentity;
-	    }
-
-	    public DeltaFunction function(int n){
-	    	return func[n];
-	    }
-        public int numberOfFunctions()
-        {
-            return func.Length;
-        }
-
-	    //So this method will process any input til it reach
-	    //the last symbol from the input
-	    public void process(string tape, int index, State state, int n )
-		{
-            //If the current function have an output for the input
-            if (state.function(n).getInput() == tape[index]) {
-                //TODO process the input
-                process(tape, index, state.function(n).getNextState(), 0); //This will run the next process
-            }
-            else if (tape[index] == 0) {
-                if (state.identity() == Constants.FINAL)
-                {
-                    //TODO accept
-                }
-                else {
-                    //TODO reject
-                }
-            }
-            else {
-                process(tape, index, state, n + 1); //seek on the next function
-            }
-	    }
-	}
-
-	/* This is the last class for our TM. It will hold all
-	* the states instances and his functions. This is the
-	* principal class on this file.
-	*/
-	class TuringMachine
-	{
-		State[] states;
-        Alphabet alph = new Alphabet();
-
-        public bool searchForElement(int n, string c)
-        {
-            if (alph.getSymbol(n) == c) return true;
-            else return false;
-        }
-        //This function will set the alphabet to the required patterns
-        public string defineAlphabet(string s)
-        {
-            char[] separators = { ' ', ','};
-            string[] input = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-            //to check if there's any duplicated symbol on the string
-            for (int i = 0; i < input.Length; i++)
+            description += s.name() + ": ";
+            for(int i = 0; i < s.numberOfFunctions(); i++)
             {
-                for (int j = 0; j < input.Length; j++)
-                {
-                    if (input[i] == input[j])
-                    {
-                        if (i != j)
-                        {
-                            return "duplicated symbol";
-                        }
-                    }
-                }
+                description += "("+ s.function(i).toString() + ")";
 
-                alph.insertSymbol(input[i]);
+                if (i != s.numberOfFunctions() - 1)
+                    description += ", ";
+
+                else description += "; ";
             }
-
-            return "alphabet successfully created";
-        }
-        //This function will map the symbols on their respective keys on our hash,
-        //so we'll be able to use the alphabet's hash numbers instead of their symbols
-        public string setInputFormat(string s)
-        {
-            char[] separators = { ' ', ',' };
-            string[] stringInput = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-            int[] normalInput = new int[stringInput.Length + 1];
-
-            for (int j = 0; j < stringInput.Length; j++)
-            {
-                bool notFound = true;
-
-                for (int i = 1; i <= alph.length(); i++)
-                {
-                    if (stringInput[j] == alph.getSymbol(i))
-                    {
-                        normalInput[normalInput.Length] = i;
-                        notFound = false;
-                        break;
-                    }
-                }
-
-                if (notFound) return "symbol not found"; //breaks the function to return the error
-
-            }
-            normalInput[stringInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
-            return stringInput + "";
         }
 
-        //to process the input tape
-        public void startMachine(string tape)
-        {
-            tape = setInputFormat(tape);
-            State initial = null;
-            State final = null;
-
-
-            foreach(State q in states)
-            {
-                if (q.identity() == Constants.INITIAL) initial = q;
-
-                else if (q.identity() == Constants.FINAL) final = q;
-
-                if (final != null && initial != null) break;
-            }
-
-            initial.process(tape, 0, initial, 0);
-        }
-
-        //to save the TM's description
-        public void saveMachine()
-        {
-            
-        }
-
-        //This function is suposed to process all the elements from our TM and
-        //give us the normalized description.
-        public string toString()
-        {
-            string description = null;
-            string initialState = null;
-            string finalState = null;
-
-            for(int i = 0; i < alph.length(); i++)
-            {
-                description += alph.getSymbol(i) +" ,";
-            }
-            description += "#";
-
-            foreach (State s in states)
-            {
-                description = description + s.name() + " ,";
-
-                if (s.identity() == Constants.INITIAL)
-                    initialState = s.name();
-                if (s.identity() == Constants.FINAL)
-                    finalState = s.name();
-            }
-            
-            description += "#" + initialState + "#" + finalState + "#";
-
-            foreach (State s in states)
-            {
-                description += s.name() + ": ";
-                for(int i = 0; i < s.numberOfFunctions(); i++)
-                {
-                    description += "("+ s.function(i).toString() + ")";
-
-                    if (i != s.numberOfFunctions() - 1)
-                        description += ", ";
-
-                    else description += "; ";
-                }
-            }
-
-            return description;
-        }
-	}
+        return description;
+    }
 }

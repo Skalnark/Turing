@@ -61,16 +61,16 @@ public class State
 
     public string processDeepness(int deepness)
     {
-        if (deepness == 40)
+        if (deepness == 100)
         {
             return "Is this algorithm decidable?";
         }
-        else if (deepness == 100)
+        else if (deepness == 500)
         {
-            return "This simulation uses recursive functions that may use too much memory if you run a undecidable algorithm for too much steps";
+            return "This simulation use recursive functions that may use too much memory if you run an algorithm for too much steps";
             //TODO function that glow the "stop" button
         }
-        else if (deepness == 200)
+        else if (deepness == 1000)
         {
             return "Our machine won't crash, your's I can't guarantee";
             //TODO function that glow the "stop" button

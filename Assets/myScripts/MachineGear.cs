@@ -26,11 +26,11 @@ using UnityEngine;
 public class MachineGear : MonoBehaviour {
 
 	public GameObject cellTapePrefab;
-	public GameObject machine; 
-	public Alphabet alph; ///O ETeimoso
+	public GameObject machine;
+    public TuringMachine tm;
+    public Alphabet alph; ///O Eteimoso
 
-
-	public void onInputMove(bool side){
+    public void onInputMove(bool side){
 		if(side){
 			machine.transform.position += new Vector3(1.5f, 0, 0);
 		}

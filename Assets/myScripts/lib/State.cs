@@ -100,6 +100,7 @@ public class State
         }
         else {
             process(tape, index, state, n + 1, deepness+1); //seek on the next function
+            //TODO se o estado não processar a entrada, tratar a exceção
         }
     }
 }

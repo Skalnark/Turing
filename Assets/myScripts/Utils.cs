@@ -15,8 +15,9 @@ public class Utils : MonoBehaviour {
 
     public static IEnumerator Blink(GameObject light, int time)
     {
-        light.SetActive(false);
-        yield return new WaitForSecondsRealtime(time);
         light.SetActive(true);
+        yield return new WaitForSecondsRealtime(time);
+        light.SetActive(false);
     }
+
 }

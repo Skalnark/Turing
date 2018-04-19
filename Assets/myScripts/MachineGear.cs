@@ -27,10 +27,11 @@ public class MachineGear : MonoBehaviour {
 
 	public GameObject cellTapePrefab;
 	public GameObject machine;
+    public GameObject greenLight, redLight;
     public TuringMachine tm;
     public Alphabet alph; ///O Eteimoso
 
-    public void onInputMove(bool side){
+    public void OnInputMove(bool side){
 		if(side){
 			machine.transform.position += new Vector3(1.5f, 0, 0);
 		}
@@ -39,7 +40,7 @@ public class MachineGear : MonoBehaviour {
 		}
 	}
 
-	public void onSymbolInsert(GameObject infiniteTape, int key){
+	public void OnSymbolInsert(GameObject infiniteTape, int key){
 		//to make our "infinite" tape look really endless like Dream of Them
 		infiniteTape.transform.localScale += new Vector3(1.5f, 0, 0);
 

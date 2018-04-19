@@ -8,7 +8,7 @@ public class Utils : MonoBehaviour {
     public TuringMachine tm;
     public int tapecellnumb;
 
-    public static IEnumerator Wait(int time)
+    public static IEnumerator Wait(float time)
     {
         yield return new WaitForSecondsRealtime(time);
     }
@@ -20,4 +20,8 @@ public class Utils : MonoBehaviour {
         light.SetActive(false);
     }
 
+    public static void WriteOnDisplay(TextMesh display, TextMesh source)
+    {
+        display.text = source.text;
+    }
 }

@@ -23,14 +23,6 @@
 /*.svd
 /*.pdb
 
-# Unity3D generated meta files
-/*.pidb.meta
-/[Aa]ssets/*.meta
-/[Aa]ssets/myScripts/*.meta
-/[Aa]ssets/myScripts/lib/*.meta
-/[Aa]ssets/myGraphics/Materials/*.meta
-/[Aa]ssets/myGraphics/Textures/*.meta
-
 
 # Unity3D Generated File On Crash Reports
 /sysinfo.txt
@@ -38,6 +30,3 @@
 # Builds
 /*.apk
 /*.unitypackage
-
-
-# Original at https://www.gitignore.io/api/unity

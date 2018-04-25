@@ -24,42 +24,32 @@ using UnityEngine;
 */
 public class TuringMachine
 {
+    string name;
 	State[] states;
     Alphabet alph = new Alphabet();
 
-    public bool searchForElement(int n, string c)
+    public void SetName(string name)
+    {
+        this.name = name;
+    }
+
+    public string GetName()
+    {
+        return name;
+    }
+    public bool SearchForElement(int n, string c)
     {
         if (alph.getSymbol(n) == c) return true;
         else return false;
     }
     //This function will set the alphabet to the required patterns
-    public string defineAlphabet(string s)
+    public void DefineAlphabet(Alphabet alph)
     {
-        char[] separators = { ' ', ','};
-        string[] input = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-        //to check if there's any duplicated symbol on the string
-        for (int i = 0; i < input.Length; i++)
-        {
-            for (int j = 0; j < input.Length; j++)
-            {
-                if (input[i] == input[j])
-                {
-                    if (i != j)
-                    {
-                        return "duplicated symbol";
-                    }
-                }
-            }
-
-            alph.insertSymbol(input[i]);
-        }
-
-        return "alphabet successfully created";
+        this.alph = alph;
     }
     //This function will map the symbols on their respective keys on our hash,
     //so we'll be able to use the alphabet's hash numbers instead of their symbols
-    public string setInputFormat(string s)
+    public string SetInputFormat(string s)
     {
         char[] separators = { ' ', ',' };
         string[] stringInput = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
@@ -88,29 +78,23 @@ public class TuringMachine
     }
 
     //to process the input tape
-    public void startMachine(string tape)
+    public void StartMachine(string tape)
     {
-        tape = setInputFormat(tape);
+        tape = SetInputFormat(tape);
         State initial = null;
         State final = null;
 
 
         foreach(State q in states)
         {
-            if (q.identity() == Constants.INITIAL) initial = q;
+            if (q.Identity() == Constants.INITIAL) initial = q;
 
-            else if (q.identity() == Constants.FINAL) final = q;
+            else if (q.Identity() == Constants.FINAL) final = q;
 
             if (final != null && initial != null) break;
         }
 
         initial.process(tape, 0, initial, 0, 0);
-    }
-
-    //to save the TM's description
-    public void saveMachine()
-    {
-        
     }
 
     //This function is suposed to process all the elements from our TM and
@@ -129,24 +113,24 @@ public class TuringMachine
 
         foreach (State s in states)
         {
-            description = description + s.name() + " ,";
+            description = description + s.Name() + " ,";
 
-            if (s.identity() == Constants.INITIAL)
-                initialState = s.name();
-            if (s.identity() == Constants.FINAL)
-                finalState = s.name();
+            if (s.Identity() == Constants.INITIAL)
+                initialState = s.Name();
+            if (s.Identity() == Constants.FINAL)
+                finalState = s.Name();
         }
         
         description += "#" + initialState + "#" + finalState + "#";
 
         foreach (State s in states)
         {
-            description += s.name() + ": ";
-            for(int i = 0; i < s.numberOfFunctions(); i++)
+            description += s.Name() + ": ";
+            for(int i = 0; i < s.NumberOfFunctions(); i++)
             {
-                description += "("+ s.function(i).toString() + ")";
+                description += "("+ s.DFunction(i).toString() + ")";
 
-                if (i != s.numberOfFunctions() - 1)
+                if (i != s.NumberOfFunctions() - 1)
                     description += ", ";
 
                 else description += "; ";

@@ -27,39 +27,45 @@ public class State
     private string stateName;
     private DeltaFunction[] func; //Will hold the transactional functions for this state
     private int stateIdentity;
-
+    
+    //Default Constructor
+    public State(string name)
+    {
+        this.stateName = name;
+        this.stateIdentity = Constants.NORMAL;
+    }
     public State(DeltaFunction[] func, string stateName){
         this.stateName = stateName;
     	this.func = func;
     	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
     }
 
-    public void defineIdentity(int i){
+    public void DefineIdentity(int i){
     	stateIdentity = i;
     }
 
-    public void setName(string n)
+    public void SetName(string n)
     {
         stateName = n;
     }
     
-    public string name()
+    public string Name()
     {
         return stateName;
     }
-    public int identity(){
+    public int Identity(){
     	return stateIdentity;
     }
 
-    public DeltaFunction function(int n){
+    public DeltaFunction DFunction(int n){
     	return func[n];
     }
-    public int numberOfFunctions()
+    public int NumberOfFunctions()
     {
         return func.Length;
     }
 
-    public string processDeepness(int deepness)
+    public string ProcessDeepness(int deepness)
     {
         if (deepness == 100)
         {
@@ -82,15 +88,15 @@ public class State
     //the last symbol from the input
     public void process(string tape, int index, State state, int n, int deepness)
 	{
-        processDeepness(deepness);
+        ProcessDeepness(deepness);
 
         //If the current function have an output for the input
-        if (state.function(n).getInput() == tape[index]) {
+        if (state.DFunction(n).getInput() == tape[index]) {
             //TODO process the input
-            process(tape, index, state.function(n).getNextState(), 0, deepness); //This will run the next process
+            process(tape, index, state.DFunction(n).getNextState(), 0, deepness); //This will run the next process
         }
         else if (tape[index] == 0) {
-            if (state.identity() == Constants.FINAL)
+            if (state.Identity() == Constants.FINAL)
             {
                 //TODO accept
             }

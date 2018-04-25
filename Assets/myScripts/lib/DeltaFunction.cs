@@ -57,7 +57,7 @@ public class DeltaFunction
     {
         string description = null;
 
-        description = input + "," + output + "," + side + "," + state.name();
+        description = input + "," + output + "," + side + "," + state.Name();
 
         return description;
     }

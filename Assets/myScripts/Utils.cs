@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Utils : MonoBehaviour {
 
-    public Alphabet alph;
-    public TuringMachine tm;
-    public int tapecellnumb;
+    private Alphabet alph;
+	private TuringMachine tm;
+	public int tapecellnumb;
+	public InputField valueInput;
+
 
     public static IEnumerator Wait(float time)
     {
@@ -24,4 +27,9 @@ public class Utils : MonoBehaviour {
     {
         display.text = source.text;
     }
+
+	//fazer uma função que receberá uma string como input, através do inputField
+	//processar a string, checando se o alfabeto existe
+	//enquanto isso colocar as celulas no tape
+
 }

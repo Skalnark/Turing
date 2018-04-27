@@ -24,18 +24,15 @@ using UnityEngine;
 */
 public class State
 {
-    private string stateName;
     private DeltaFunction[] func; //Will hold the transactional functions for this state
     private int stateIdentity;
     
     //Default Constructor
     public State(string name)
     {
-        this.stateName = name;
         this.stateIdentity = Constants.NORMAL;
     }
-    public State(DeltaFunction[] func, string stateName){
-        this.stateName = stateName;
+    public State(DeltaFunction[] func){
     	this.func = func;
     	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
     }
@@ -44,15 +41,6 @@ public class State
     	stateIdentity = i;
     }
 
-    public void SetName(string n)
-    {
-        stateName = n;
-    }
-    
-    public string Name()
-    {
-        return stateName;
-    }
     public int Identity(){
     	return stateIdentity;
     }

@@ -54,62 +54,53 @@ public class MachineGear : MonoBehaviour {
 		cellTape.GetComponent<TextMesh>().text = "" + alph.getSymbol(key);
 	}
 
-    public TuringMachine BuildMachineFromDescription(string description)
+    public TuringMachine BuildMachineFromDescription(string d)
     {
-        TuringMachine tm = new TuringMachine();
-        Alphabet alphabet = new Alphabet();
-        State[] states;
-        string name = null;
-        int i = 0;
-        //To extract the name of the machine
-        while (!description[i].Equals("#"))
+        Alphabet alph = new Alphabet(); ///O ETeimoso
+
+        //Split the string in components
+        String[] description = d.Split('#'); 
+        //Split the Alphabet in symbols
+        String[] symbols = description[1].Split(','); 
+        //Split the delta functions in functions from each state
+        String[] deltaFunctions = description[5].Split(';'); 
+
+        string name = description[0];
+        string machineDescription = description[6];
+
+        int initial = int.Parse(description[3]);
+        int final = int.Parse(description[4]);
+
+        State[] states = new State[int.Parse(description[2])];
+
+        foreach(string s in symbols)
         {
-            name += description[i];
-            description.Remove(i);
-            i++;
+            alph.insertSymbol(s);
         }
 
-        description.Remove(i);
-        i = 0;
-        tm.SetName(name);
-
-        //To extract the alphabet
-        string symb = null;
-        while (!description[i].Equals("#"))
-        {
-            if(!description[i].Equals(","))
-            {
-                symb += description[i];
-            }
-            else
-            {
-                alph.insertSymbol(symb);
-                symb = null;
-            }
-            description.Remove(i);
-            i++;
-        }
-        i = 0;
-
-        string value = description[0] + "";
-        description.Remove(0, 1); //to remove the stateNumber and the "#"
-        int nStates = int.Parse(value);
-        states = new State[nStates];
         
-        //TODO
-        //to extract the functions from each state
-        while (!description[i].Equals("#"))
+        for(int i = 0; i < deltaFunctions.Length; i++)
         {
-            if (description[i].Equals("("))
+            String[] functions = deltaFunctions[i].Split('|');
+            DeltaFunction[] df = new DeltaFunction[functions.Length];
+            
+            for(int j = 0; j < functions.Length; j++)
             {
-                while (!description[i].Equals(")")){
-                    
-                }
+                String[] function = functions[j].Split(',');
+                df[i] = new DeltaFunction(
+                    alph.getSymbolKey(function[0]), //Symbol readed
+                    alph.getSymbolKey(function[1]), //Symbol to write
+                    functions[2], //The side wich the "machine's head" should go
+                    states[int.Parse(function[3])]); //The state to go
             }
+
+            states[i] = new State(df);
         }
 
-        tm.DefineAlphabet(alph);
+        states[initial].DefineIdentity(Constants.INITIAL);
+        states[final].DefineIdentity(Constants.FINAL);
 
+        tm = new TuringMachine(name, alph, states, machineDescription);
 
         return tm;
     }

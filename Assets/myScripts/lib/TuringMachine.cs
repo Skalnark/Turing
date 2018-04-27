@@ -25,8 +25,18 @@ using UnityEngine;
 public class TuringMachine
 {
     string name;
+    string description;
+
 	State[] states;
     Alphabet alph = new Alphabet();
+
+    public TuringMachine(string name, Alphabet alph, State[] states, string description)
+    {
+        this.name = name;
+        this.alph = alph;
+        this.states = states;
+        this.description = description;
+    }
 
     public void SetName(string name)
     {
@@ -51,6 +61,7 @@ public class TuringMachine
     //so we'll be able to use the alphabet's hash numbers instead of their symbols
     public string SetInputFormat(string s)
     {
+        // TODO: Fix this function 
         char[] separators = { ' ', ',' };
         string[] stringInput = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
@@ -96,47 +107,5 @@ public class TuringMachine
 
         initial.process(tape, 0, initial, 0, 0);
     }
-
-    //This function is suposed to process all the elements from our TM and
-    //give us the normalized description.
-    public string toString()
-    {
-        string description = null;
-        string initialState = null;
-        string finalState = null;
-
-        for(int i = 0; i < alph.length(); i++)
-        {
-            description += alph.getSymbol(i) +" ,";
-        }
-        description += "#";
-
-        foreach (State s in states)
-        {
-            description = description + s.Name() + " ,";
-
-            if (s.Identity() == Constants.INITIAL)
-                initialState = s.Name();
-            if (s.Identity() == Constants.FINAL)
-                finalState = s.Name();
-        }
-        
-        description += "#" + initialState + "#" + finalState + "#";
-
-        foreach (State s in states)
-        {
-            description += s.Name() + ": ";
-            for(int i = 0; i < s.NumberOfFunctions(); i++)
-            {
-                description += "("+ s.DFunction(i).toString() + ")";
-
-                if (i != s.NumberOfFunctions() - 1)
-                    description += ", ";
-
-                else description += "; ";
-            }
-        }
-
-        return description;
-    }
+    
 }

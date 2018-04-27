@@ -30,7 +30,10 @@ public class DeltaFunction
     private State state; //The state tha will be called by our function
 
     //default constructor
-    public DeltaFunction(int input, int output, State state, string side){
+    public DeltaFunction() {
+    }
+    public DeltaFunction(int input, int output, string side, State state)
+    {
     	this.input = input;
     	this.output = output;
     	this.state = state;
@@ -50,15 +53,5 @@ public class DeltaFunction
     }
     public State getNextState(){
     	return state;
-    }
-
-
-    public string toString()
-    {
-        string description = null;
-
-        description = input + "," + output + "," + side + "," + state.Name();
-
-        return description;
     }
 }

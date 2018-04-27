@@ -32,11 +32,18 @@ public class Alphabet
     }
 
     //To insert a new symbol and increment the lastKey
-    public void insertSymbol(string c)
+    public int insertSymbol(string c)
     {
-        alph.Add(++index, c);
+        if (alph.ContainsValue(c))
+        {
+            return -1;
+        }
+        else
+        {
+            alph.Add(++index, c);
+            return index;
+        }
     }
-
     //To get the symbol through the key
     public string getSymbol(int n)
     {
@@ -48,5 +55,17 @@ public class Alphabet
     public int length()
     {
         return index;
+    }
+
+    public int getSymbolKey(string value)
+    {
+        for(int i = 0; i < index; i++)
+        {
+            if (alph[i].Equals(value))
+            {
+                return i;
+            }
+        }
+        return int.Parse(null);
     }
 }

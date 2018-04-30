@@ -8,6 +8,7 @@
 	- **Implementar a função de leitura de arquivo contendo a descrição da máquina, a função deverá instanciar a máquina.**
 	- **Implementar a função que grava máquina registrada em arquivo.**
 		- Implementar a função de registro de máquina, que deverá também salvar a máquina em outro arquivo. 
+			- Criada uma função para pegar o registro de uma máquina inserida e salvar no disco ✓
 		- Criar a cena de registro de máquina.
 	- **Implementar as funções de início e parada de processamento (estudar uso de thread em Unity5).**
 - ### State.cs

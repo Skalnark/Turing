@@ -53,6 +53,20 @@ public class State
         return func.Length;
     }
 
+    public string toString()
+    {
+        string text = null;
+
+        for(int i = 0; i < func.Length; i++)
+        {
+            text += func[i].getInput() + ",";
+            text += func[i].getOutput() + ",";
+            text += func[i].getSide() + ",";
+            text += func[i].getNextState() + "|";
+        }
+        return text;
+    }
+
     public string ProcessDeepness(int deepness)
     {
         if (deepness == 100)

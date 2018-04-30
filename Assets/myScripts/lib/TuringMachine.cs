@@ -108,4 +108,55 @@ public class TuringMachine
         initial.process(tape, 0, initial, 0, 0);
     }
     
+    public string toString()
+    {
+        string text = name;
+        text += "#";
+
+        for(int i = 0; i < alph.length(); i++)
+        {
+            text += alph.getSymbol(i) + ",";
+        }
+
+        text += "#";
+
+        text += states.Length;
+
+        text += "#";
+
+        for (int i = 0; i < states.Length; i++)
+        {
+            if (states[i].Identity() == Constants.INITIAL)
+            {
+                text += i;
+                break;
+            }
+        }
+
+        text += "#";
+
+        for (int i = 0; i < states.Length; i++)
+        {
+            if (states[i].Identity() == Constants.FINAL)
+            {
+                text += i;
+                break;
+            }
+        }
+
+        text += "#";
+
+        for(int i = 0; i < states.Length; i++)
+        {
+            text += states[i].toString() + ";";
+        }
+
+        text.Remove(text.Length);
+
+        text += "#";
+
+        text += description;
+
+        return text;
+    }
 }

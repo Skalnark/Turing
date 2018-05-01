@@ -108,6 +108,12 @@ public class MachineGear : MonoBehaviour {
     public void WriteMachine(TuringMachine turingMachine)
     {
         string thisname = name.Replace(' ', '\0');
-        System.IO.File.WriteAllText(thisname + ".txt", turingMachine.toString());
-    }
+        try
+        {
+            System.IO.File.WriteAllText(thisname + ".txt", turingMachine.toString());
+        }catch(Exception e)
+        {
+            Debug.Log(e);
+        }
+    }   
 }

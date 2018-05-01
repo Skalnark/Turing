@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /* ********************************************
  * Graphic Simulator for Turing Machines
@@ -115,5 +116,19 @@ public class MachineGear : MonoBehaviour {
         {
             Debug.Log(e);
         }
+    }
+    
+    public void ReceiveTape() 
+    {
+        try
+        {
+            String input = textInput.text;
+            Utils.InputToTape(input, cellTapePrefab);
+        }catch(System.Exception e)
+        {
+            Debug.Log(e);
+        }
+        textInput.text = "";
+        
     }   
 }

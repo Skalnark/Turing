@@ -88,27 +88,35 @@ public class State
 
     //So this method will process any input til it reach
     //the last symbol from the input
-    public void process(string tape, int index, State state, int n, int deepness)
-	{
+    public int process(string tape, int index, State state, int functionIndex, int deepness)
+    {
         ProcessDeepness(deepness);
 
-        //If the current function have an output for the input
-        if (state.DFunction(n).getInput() == tape[index]) {
-            //TODO process the input
-            process(tape, index, state.DFunction(n).getNextState(), 0, deepness); //This will run the next process
-        }
-        else if (tape[index] == 0) {
-            if (state.Identity() == Constants.FINAL)
-            {
-                //TODO accept
+        try {
+
+            //If the current function have an output for the input
+            if (state.DFunction(functionIndex).getInput() == tape[index]) {
+                //TODO process the input
+                process(tape, index, state.DFunction(functionIndex).getNextState(), 0, deepness + 1); //This will run the next process
+            }
+            else if (tape[index] == -1) {
+                if (state.Identity() == Constants.FINAL)
+                {
+                    return Constants.ACCEPT;
+                }
+                else {
+                    return Constants.REJECT;
+                }
             }
             else {
-                //TODO reject
+                process(tape, index, state, functionIndex + 1, deepness + 1); //seek on the next function
             }
         }
-        else {
-            process(tape, index, state, n + 1, deepness+1); //seek on the next function
-            //TODO se o estado não processar a entrada, tratar a exceção
+        catch(Exception e)
+        {
+            Debug.Log(e.Message);
         }
+
+        return -1;
     }
 }

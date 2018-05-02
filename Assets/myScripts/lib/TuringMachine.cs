@@ -59,50 +59,25 @@ public class TuringMachine
     }
     //This function will map the symbols on their respective keys on our hash,
     //so we'll be able to use the alphabet's hash numbers instead of their symbols
-    public string SetInputFormat(string s)
+    public string SetInputFormat(String[] s)
     {
-        // TODO: Fix this function 
-        char[] separators = { ' ', ',' };
-        string[] stringInput = s.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-        int[] normalInput = new int[stringInput.Length + 1];
-
-        for (int j = 0; j < stringInput.Length; j++)
-        {
-            bool notFound = true;
-
-            for (int i = 1; i <= alph.length(); i++)
-            {
-                if (stringInput[j] == alph.getSymbol(i))
-                {
-                    normalInput[normalInput.Length] = i;
-                    notFound = false;
-                    break;
-                }
-            }
-
-            if (notFound) return "symbol not found"; //breaks the function to return the error
-
-        }
-        normalInput[stringInput.Length] = Constants.WHITESPACE; //the last element is the whitespace
-        return stringInput + "";
+        string str = null;
+        return str;
     }
 
     //to process the input tape
-    public void StartMachine(string tape)
+    public void StartMachine(String[] t)
     {
-        tape = SetInputFormat(tape);
+        string tape = SetInputFormat(t);
         State initial = null;
-        State final = null;
-
 
         foreach(State q in states)
         {
-            if (q.Identity() == Constants.INITIAL) initial = q;
-
-            else if (q.Identity() == Constants.FINAL) final = q;
-
-            if (final != null && initial != null) break;
+            if (q.Identity() == Constants.INITIAL)
+            {
+                initial = q;
+                break;
+            }
         }
 
         initial.process(tape, 0, initial, 0, 0);

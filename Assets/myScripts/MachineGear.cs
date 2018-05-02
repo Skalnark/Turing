@@ -27,16 +27,13 @@ using UnityEngine.UI;
 public class MachineGear : MonoBehaviour {
 
 	public GameObject cellTapePrefab;
-	public GameObject machine;
+    public GameObject machine;
     public GameObject greenLight, redLight;
     public TuringMachine tm;
     public Alphabet alph; ///O Eteimoso
     public State[] states;
 
-    private void Update()
-    {
-        
-    }
+    public Text textInput;
 
     public void OnInputMove(bool side){
 		if(side){

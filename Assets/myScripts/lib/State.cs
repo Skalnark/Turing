@@ -24,16 +24,19 @@ using UnityEngine;
 */
 public class State
 {
-    private DeltaFunction[] func; //Will hold the transactional functions for this state
+    private List<DeltaFunction> func; //Will hold the transactional functions for this state
     private int stateIdentity;
     
     //Default Constructor
-    public State(string name)
+    public State()
     {
-        this.stateIdentity = Constants.NORMAL;
+         this.stateIdentity = Constants.NORMAL;
     }
     public State(DeltaFunction[] func){
-    	this.func = func;
+    	foreach(DeltaFunction function in func)
+        {
+            this.func.Add(function);
+        }
     	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
     }
 
@@ -45,19 +48,30 @@ public class State
     	return stateIdentity;
     }
 
+    public bool HaveFunctions()
+    {
+        try
+        {
+            if (func.Count != 0) return true;
+        }
+        catch { }
+
+        return false;
+    }
     public DeltaFunction DFunction(int n){
     	return func[n];
     }
-    public int NumberOfFunctions()
+
+    public void SetFunctions(List<DeltaFunction> df)
     {
-        return func.Length;
+        this.func = df;
     }
 
     public string toString()
     {
         string text = null;
 
-        for(int i = 0; i < func.Length; i++)
+        for(int i = 0; i < func.Count; i++)
         {
             text += func[i].getInput() + ",";
             text += func[i].getOutput() + ",";
@@ -66,57 +80,25 @@ public class State
         }
         return text;
     }
-
-    public string ProcessDeepness(int deepness)
+    
+    public int NumberOfFunctions()
     {
-        if (deepness == 100)
-        {
-            return "Is this algorithm decidable?";
-        }
-        else if (deepness == 500)
-        {
-            return "This simulation use recursive functions that may use too much memory if you run an algorithm for too much steps";
-            //TODO function that glow the "stop" button
-        }
-        else if (deepness == 1000)
-        {
-            return "Our machine won't crash, your's I can't guarantee";
-            //TODO function that glow the "stop" button
-        }
-        else return null;
+        if (func != null) return func.Count;
+        else return 0;
     }
 
-    //So this method will process any input til it reach
-    //the last symbol from the input
-    public int process(string tape, int index, State state, int functionIndex, int deepness)
+    public DeltaFunction LookForFunction(char input)
     {
-        ProcessDeepness(deepness);
-
-        try {
-
-            //If the current function have an output for the input
-            if (state.DFunction(functionIndex).getInput() == tape[index]) {
-                //TODO process the input
-                process(tape, index, state.DFunction(functionIndex).getNextState(), 0, deepness + 1); //This will run the next process
-            }
-            else if (tape[index] == -1) {
-                if (state.Identity() == Constants.FINAL)
-                {
-                    return Constants.ACCEPT;
-                }
-                else {
-                    return Constants.REJECT;
-                }
-            }
-            else {
-                process(tape, index, state, functionIndex + 1, deepness + 1); //seek on the next function
-            }
-        }
-        catch(Exception e)
+        foreach(DeltaFunction df in func)
         {
-            Debug.Log(e.Message);
+            if (df.getInput() == input) return df;
         }
 
-        return -1;
+        return null;
+    }
+
+    public List<DeltaFunction> StateFunctions()
+    {
+        return func;
     }
 }

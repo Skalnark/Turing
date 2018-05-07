@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 /* ********************************************
  * Graphic Simulator for Turing Machines
@@ -22,116 +24,334 @@ using UnityEngine;
 * the states instances and his functions. This is the
 * principal class on this file.
 */
-public class TuringMachine
+public class TuringMachine : MonoBehaviour
 {
-    string name;
+    public float speed = 10;
+
+    string tmName;
     string description;
 
-	State[] states;
+	List<State> states;
     Alphabet alph = new Alphabet();
+    GameObject cellTapePrefab;
+    GameObject crossLight;
+    GameObject correctLight;
 
-    public TuringMachine(string name, Alphabet alph, State[] states, string description)
+    public GameObject leftArrow, rightArrow, stayStill;
+
+    IEnumerator currentStopCoroutine;
+    IEnumerator currentMoveMachineCoroutine;
+    IEnumerator currentBlinkCoroutine;
+
+    public TuringMachine()
     {
-        this.name = name;
+        tmName = null;
+        alph = null;
+        states = null;
+        description = null;
+        cellTapePrefab = null;
+        crossLight = null;
+        correctLight = null;
+    }
+
+    public void InstanciateMachine(string name, Alphabet alph, List<State> states, string description, 
+        GameObject cellTapePrefab, GameObject crossLight, GameObject correctLight)
+    {
+        this.tmName = name;
         this.alph = alph;
         this.states = states;
         this.description = description;
+        this.cellTapePrefab = cellTapePrefab;
+        this.correctLight = correctLight;
+        this.crossLight = crossLight;
     }
 
-    public void SetName(string name)
+    public int InitialStateIndex()
     {
-        this.name = name;
+        int index = -1;
+        for (int i = 0; i < states.Count; i++)
+        {
+            if (states[i].Identity() == Constants.INITIAL) {
+                index = i;
+                return i;
+            }
+        }
+
+        return index;
+    }
+
+    public int FinalStateIndex()
+    {
+        int index = -1;
+        for(int i = 0; i < states.Count; i++)
+        {
+            if(states[i].Identity() == Constants.FINAL)
+            {
+                index = i;
+                return index;
+            }
+        }
+        return index;
+    }
+
+    public State StateByIndex(int n)
+    {
+        return states[n];
+    }
+
+    public int NumberOfStates()
+    {
+        if (states != null) return states.Count;
+        else return 0;
     }
 
     public string GetName()
     {
-        return name;
+        return tmName;
     }
-    public bool SearchForElement(int n, string c)
+
+    public Alphabet Alphabet()
     {
-        if (alph.getSymbol(n) == c) return true;
-        else return false;
+        return alph;
     }
+
     //This function will set the alphabet to the required patterns
     public void DefineAlphabet(Alphabet alph)
     {
         this.alph = alph;
     }
-    //This function will map the symbols on their respective keys on our hash,
-    //so we'll be able to use the alphabet's hash numbers instead of their symbols
-    public string SetInputFormat(String[] s)
+
+    public void IncrementSpeed()
     {
-        string str = null;
-        return str;
+        if (speed < 8)
+        {
+            speed++;
+        }
     }
 
-    //to process the input tape
-    public void StartMachine(String[] t)
+    public void DecrementSpeed()
     {
-        string tape = SetInputFormat(t);
-        State initial = null;
-
-        foreach(State q in states)
+        if (speed > 4f)
         {
-            if (q.Identity() == Constants.INITIAL)
+            speed--;
+        }
+    }
+
+
+
+    public ArrayList ProcessCell(State state, int index)
+    {
+        ArrayList whatReturn = new ArrayList();
+        GameObject cellTape = GameObject.FindGameObjectWithTag("actualCell");
+        
+        if(state.HaveFunctions())
+        {
+            if (cellTape != null)
             {
-                initial = q;
-                break;
+                DeltaFunction df = state.LookForFunction(char.Parse(cellTape.GetComponent<TextMesh>().text));
+                if (df != null)
+                {
+                    
+                    index = df.getNextState();
+                    Utils.WriteOnDisplay("stateDisplay", index + "");
+                    if (df.getOutput() == '~')
+                    {
+                        Utils.WriteOnDisplay("outputDisplay", "");
+                    }
+                    else
+                    {
+                        Utils.WriteOnDisplay("outputDisplay", df.getOutput() + "");
+
+                        Utils.WriteCellText(df.getOutput());
+                    }
+
+                    if (currentMoveMachineCoroutine != null) StopCoroutine(currentMoveMachineCoroutine);
+
+                    currentMoveMachineCoroutine = MoveMachine(df.getSide(), GameObject.FindGameObjectWithTag("TuringMachine").transform.position);
+                    StartCoroutine(currentMoveMachineCoroutine);
+                    whatReturn.Add(true);
+                    whatReturn.Add(index);
+                    return whatReturn;
+                }
+            }
+            else
+            {
+
+                DeltaFunction df = state.LookForFunction('~');
+                if (df != null)
+                {
+                    index = df.getNextState();
+                    Utils.WriteOnDisplay("stateDisplay", index + "");
+                    if (df.getOutput() == '~')
+                    {
+                        Utils.WriteOnDisplay("outputDisplay", "");
+
+                        if (currentMoveMachineCoroutine != null) StopCoroutine(currentMoveMachineCoroutine);
+
+                        currentMoveMachineCoroutine = MoveMachine(df.getSide(), GameObject.FindGameObjectWithTag("TuringMachine").transform.position);
+                        StartCoroutine(currentMoveMachineCoroutine);
+
+                        whatReturn.Add(true);
+                        whatReturn.Add(index);
+                        return whatReturn;
+                    }
+                    else
+                    {
+                        Utils.InstantiateCell(df.getOutput(), cellTapePrefab);
+                        Utils.WriteOnDisplay("outputDisplay", df.getOutput() + "");
+
+
+                        if (currentMoveMachineCoroutine != null) StopCoroutine(currentMoveMachineCoroutine);
+
+                        currentMoveMachineCoroutine = MoveMachine(df.getSide(), GameObject.FindGameObjectWithTag("TuringMachine").transform.position);
+                        StartCoroutine(currentMoveMachineCoroutine);
+                        whatReturn.Add(true);
+                        whatReturn.Add(index);
+                        return whatReturn;
+                    }
+                    
+                }
+                else
+                {
+                    whatReturn.Add(false);
+                    whatReturn.Add(index);
+                    return whatReturn;
+                }
             }
         }
+        whatReturn.Add(false);
+        whatReturn.Add(index);
+        return whatReturn;
+    }
 
-        initial.process(tape, 0, initial, 0, 0);
+    public IEnumerator StopMachine(State state)
+    {
+
+        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.red;
+        if (state.Identity() == Constants.FINAL)
+        {
+            correctLight.SetActive(true);
+            yield return new WaitForSeconds(5);
+            correctLight.SetActive(false);
+        }
+        else
+        {
+            crossLight.SetActive(true);
+            yield return new WaitForSeconds(5);
+            crossLight.SetActive(false);
+        }
+
     }
     
-    public string toString()
+    IEnumerator MoveMachine(char side, Vector3 target)
     {
-        string text = name;
-        text += "#";
+        GameObject machine = GameObject.FindGameObjectWithTag("TuringMachine");
 
-        for(int i = 0; i < alph.length(); i++)
+        target.x -= (target.x % 1.5f);
+
+        if (side == 'R')
         {
-            text += alph.getSymbol(i) + ",";
+
+            if (currentBlinkCoroutine != null) StopCoroutine(currentBlinkCoroutine);
+            currentBlinkCoroutine = BlinkRight();
+            StartCoroutine(currentBlinkCoroutine);
+            machine.transform.position = target;
+            target.x += 1.5f;
+            while(machine.transform.position.x < target.x)
+            {
+                machine.transform.position += new Vector3(Time.deltaTime*speed, 0, 0);
+                yield return null;
+            }
+            machine.transform.position = target;
         }
 
-        text += "#";
-
-        text += states.Length;
-
-        text += "#";
-
-        for (int i = 0; i < states.Length; i++)
+        else if(side == 'L')
         {
-            if (states[i].Identity() == Constants.INITIAL)
+
+            if (currentBlinkCoroutine != null) StopCoroutine(currentBlinkCoroutine);
+            currentBlinkCoroutine = BlinkLeft();
+            StartCoroutine(currentBlinkCoroutine);
+            machine.transform.position = target;
+            target.x -= 1.5f;
+            while (machine.transform.position.x > target.x)
             {
-                text += i;
-                break;
+                machine.transform.position -= new Vector3(Time.deltaTime*speed, 0, 0);
+                yield return null;
+            }
+            machine.transform.position = target;
+        }
+        else
+        {
+            if (currentBlinkCoroutine != null) StopCoroutine(currentBlinkCoroutine);
+            currentBlinkCoroutine = BlinkStay();
+            StartCoroutine(currentBlinkCoroutine);
+        }
+
+        yield return new WaitForSeconds(0.2f);
+    }
+    
+    IEnumerator BlinkRight()
+    {
+        rightArrow.SetActive(true);
+        yield return new WaitForSeconds(0.3f);
+        rightArrow.SetActive(false);
+    }
+    IEnumerator BlinkLeft()
+    {
+        leftArrow.SetActive(true);
+        yield return new WaitForSeconds(0.3f);
+        leftArrow.SetActive(false);
+    }
+    IEnumerator BlinkStay()
+    {
+        stayStill.SetActive(true);
+        yield return new WaitForSeconds(0.3f);
+        stayStill.SetActive(false);
+    }
+
+    new public string ToString()
+    {
+        string completeDescription = name + "#";
+
+        foreach(char c in alph.GetAlphabet())
+        {
+            completeDescription += c;
+        }
+
+        completeDescription += "#" + states.Count + "#";
+
+        completeDescription += InitialStateIndex() + "#";
+
+        completeDescription += FinalStateIndex() + "#";
+
+        for(int i = 0; i < states.Count; i++)
+        {
+            if(states[i].NumberOfFunctions() > 0)
+            {
+                for(int j = 0; i < states[i].NumberOfFunctions(); i++)
+                {
+                    completeDescription += states[i].DFunction(j).getInput() + ",";
+                    completeDescription += states[i].DFunction(j).getOutput() + ",";
+
+                    completeDescription += states[i].DFunction(j).getSide() + ",";
+
+                    completeDescription += states[i].DFunction(j).getNextState();
+
+                    if (states[i].NumberOfFunctions() != j)
+                        completeDescription += "|";
+                }
+
+                if (states[i].NumberOfFunctions() != i)
+                    completeDescription += ";";
+            }
+            else
+            {
+                completeDescription += "void;";
             }
         }
 
-        text += "#";
+        completeDescription += "#" + description;
 
-        for (int i = 0; i < states.Length; i++)
-        {
-            if (states[i].Identity() == Constants.FINAL)
-            {
-                text += i;
-                break;
-            }
-        }
-
-        text += "#";
-
-        for(int i = 0; i < states.Length; i++)
-        {
-            text += states[i].toString() + ";";
-        }
-
-        text.Remove(text.Length);
-
-        text += "#";
-
-        text += description;
-
-        return text;
+        return completeDescription;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,52 +21,34 @@ using UnityEngine;
   
 public class Alphabet
 {
-    private Dictionary<int, string> alph; ///O ETeimoso
-    private int index;
+    private LinkedList<char> alph; ///O ETeimoso
 
     public Alphabet()
     {
-        alph = new Dictionary<int, string>();
-        //our "blank character" will be aways saved with key = 0
-        alph.Add(0, " ");
-        index = 0;
+        alph = new LinkedList<char>();
     }
 
     //To insert a new symbol and increment the lastKey
-    public int insertSymbol(string c)
+    public bool InsertSymbol(char c)
     {
-        if (alph.ContainsValue(c))
+        if (!LookForSymbol(c))
         {
-            return -1;
+            alph.AddLast(c);
+            return true;
         }
         else
         {
-            alph.Add(++index, c);
-            return index;
+            return false;
         }
     }
-    //To get the symbol through the key
-    public string getSymbol(int n)
+
+    public LinkedList<char> GetAlphabet()
     {
-        string value;
-        alph.TryGetValue(n, out value);
-        return value;
+        return alph;
     }
 
-    public int length()
+    public bool LookForSymbol(char c)
     {
-        return index;
-    }
-
-    public int getSymbolKey(string value)
-    {
-        for(int i = 0; i < index; i++)
-        {
-            if (alph[i].Equals(value))
-            {
-                return i;
-            }
-        }
-        return int.Parse(null);
+        return alph.Contains(c);
     }
 }

@@ -25,14 +25,14 @@ using UnityEngine;
 */
 public class DeltaFunction
 {
-    private int input, output; //the In and Out characters for our function
-    private string side; //True for Right, False for Left
-    private State state; //The state tha will be called by our function
+    private char input, output; //the In and Out characters for our function
+    private char side; //R for Right, L for Left, S for Stay
+    private int state; //The state tha will be called by our function
 
     //default constructor
     public DeltaFunction() {
     }
-    public DeltaFunction(int input, int output, string side, State state)
+    public DeltaFunction(char input, char output, char side, int state)
     {
     	this.input = input;
     	this.output = output;
@@ -40,18 +40,30 @@ public class DeltaFunction
     	this.side = side;
     }
 
-    public int getInput(){
+    public char getInput(){
     	return input;
     }
 
-    public int getOutput(){
+    public char getOutput(){
     	return output;
     }
 
-    public string getSide(){
+    public char getSide(){
     	return side;
     }
-    public State getNextState(){
+    public int getNextState(){
     	return state;
+    }
+
+    public new string ToString()
+    {
+        string description = null;
+
+        description += input + ",";
+        description += output + ",";
+        description += side + ",";
+        description += state;
+
+        return description;
     }
 }

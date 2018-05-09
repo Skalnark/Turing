@@ -114,30 +114,17 @@ public class TuringMachine : MonoBehaviour
     {
         return alph;
     }
+    
+    public string GetDescription()
+    {
+        return description;
+    }
 
     //This function will set the alphabet to the required patterns
     public void DefineAlphabet(Alphabet alph)
     {
         this.alph = alph;
     }
-
-    public void IncrementSpeed()
-    {
-        if (speed < 8)
-        {
-            speed++;
-        }
-    }
-
-    public void DecrementSpeed()
-    {
-        if (speed > 4f)
-        {
-            speed--;
-        }
-    }
-
-
 
     public ArrayList ProcessCell(State state, int index)
     {
@@ -226,21 +213,27 @@ public class TuringMachine : MonoBehaviour
 
     public IEnumerator StopMachine(State state)
     {
-
-        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.red;
+        Utils.WriteOnDisplay("stateDisplay", InitialStateIndex() + "");
         if (state.Identity() == Constants.FINAL)
         {
             correctLight.SetActive(true);
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(3);
             correctLight.SetActive(false);
         }
         else
         {
             crossLight.SetActive(true);
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(3);
             crossLight.SetActive(false);
         }
+        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = true;
+        GameObject.FindGameObjectWithTag("input").GetComponent<InputField>().interactable = true;
 
+        leftArrow.SetActive(false);
+        rightArrow.SetActive(false);
+        stayStill.SetActive(false);
+
+        StopAllCoroutines();
     }
     
     IEnumerator MoveMachine(char side, Vector3 target)

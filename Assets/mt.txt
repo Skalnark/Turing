@@ -1,1 +1,0 @@
-Amt#10x$#6#0#5#~,$,R,1|0,~,L,0|1,~,L,0|x,~,L,0;x,x,R,1|~,~,S,5|1,x,R,2|0,x,R,4;1,1,R,2|x,x,R,2|0,x,S,3;x,x,L,3|0,0,L,3|1,1,L,3|~,~,L,3|$,$,R,1;0,0,R,4|x,x,R,4|1,x,S,3;void#Esta máqunia aceita cadeias com o mesmo numero de 0s e 1s

@@ -1,0 +1,1 @@
+Amt#10#6#0#5#~,i,R,1|0,~,L,0|1,~,L,0|X,~,L,0;X,X,R,1|~,~,S,5|1,X,R,2|0,X,R,4;1,1,R,2|X,X,R,2|0,X,S,3;X,X,L,3|0,0,L,3|1,1,L,3|~,~,L,3|i,i,R,1;0,0,R,4|X,X,R,4|1,X,S,3;void#Esta máquina aceita cadeias com o mesmo numero de 0s e 1s

@@ -1,0 +1,1 @@
+Amt#qw#9#0#6#~,@,R,1|w,~,L,0|q,~,L,0|֍,~,L,0;֍,֍,R,1|~,~,S,5|q,֍,R,2|w,֍,R,4;q,q,R,2|֍,֍,R,2|w,֍,S,3;֍,֍,L,3|w,w,L,3|q,q,L,3|~,~,S,5|@,@,R,1;w,w,R,4|֍,֍,R,4|q,֍,S,3|~,@,L,5;~,@,L,5|֍,֍,L,5|q,*,S,7|w,*,S,7|@, ,R,6;֍, ,R,6|@, ,S,6;void;void#Esta máquina aceita cadeias com o mesmo numero de ws e qs e limpa a fita

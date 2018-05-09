@@ -29,7 +29,9 @@ using UnityEngine.UI;
 public class MachineGear : MonoBehaviour
 {
     string description;
-    public float speed = 0.4f;
+    public string nome;
+    public float speed;
+    public int machineNumber = 0;
 
     public Text velocity;
 
@@ -39,46 +41,67 @@ public class MachineGear : MonoBehaviour
     public GameObject startButtonLight;
 
     public TuringMachine tm;
-    
+
     public InputField input;
+    public InputField input2;
 
     private IEnumerator currentStopCoroutine;
     private IEnumerator currentProccessing;
     private IEnumerator initialcorroutine;
     private IEnumerator initialCoroutine;
 
+    public List<string> machineDescription;
+    private bool showStop;
+    public GUISkin warning;
+
     void Start()
     {
+        tm = GetComponent<TuringMachine>();
+    }
+
+    public void SearchDescription()
+    {
+        string path = null;
+
         try
         {
-            description = System.IO.File.ReadAllText("Assets/mt.txt");
+            path = Application.dataPath + "/Machines/" + nome + ".txt";
+            Debug.Log(path);
+            description = File.ReadAllText(path);
         }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-
+        catch { }
+        tm = null;
         tm = GetComponent<TuringMachine>();
 
         LoadMachine();
-        
     }
-    void Update()
+
+    public void UpdateName()
     {
-        UpdateSpeed();
+        nome = input2.text;
     }
 
     public void ProcessState()
     {
+        GameObject.FindGameObjectWithTag("input").GetComponent<InputField>().interactable = false;
+        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 0;
         GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = false;
         GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = false;
+        int actualState = tm.InitialStateIndex();
+        string input = null;
+        try
+        {
+            input = "" + int.Parse(GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>().text);
+        }
+        catch {}
 
-        int actualState = int.Parse(GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>().text);
+        if (input != null) actualState = int.Parse(input);
+
         ArrayList result = tm.ProcessCell(tm.StateByIndex(actualState), actualState);
 
         if ((bool)result[0])
         {
-            GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
+            StartCoroutine(WaitMachine(speed/2));
             return;
         }
         else
@@ -92,45 +115,9 @@ public class MachineGear : MonoBehaviour
 
     }
 
-
-    public void UpdateSpeed()
+    public void UpdateSpeed(float nowSpeed)
     {
-
-            if (velocity.text == "1")
-            {
-                speed = 1;
-            }
-            else if (velocity.text == "2")
-            {
-                speed = 0.75f;
-            }
-            else
-            {
-                speed = 0.4f;
-            }
-    }
-
-    public void IncrementVelocity()
-    {
-        if (velocity.text == "1")
-        {
-            velocity.text = "2";
-        }
-        else if (velocity.text == "2")
-        {
-            velocity.text = "3";
-        }
-    }
-    public void DecrementVelocity()
-    {
-        if (velocity.text == "3")
-        {
-            velocity.text = "2";
-        }
-        else if (velocity.text == "2")
-        {
-            velocity.text = "1";
-        }
+        speed = nowSpeed;
     }
 
     public TuringMachine SimulatedMachine()
@@ -148,8 +135,13 @@ public class MachineGear : MonoBehaviour
 
     public void StartMachine()
     {
-        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = false;
+        GameObject.FindGameObjectWithTag("input").GetComponent<InputField>().interactable = false;
+
         GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = false;
+        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 0;
+        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = false;
+
+        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.blue;
 
         startButtonLight.GetComponent<Light>().color = Color.green;
 
@@ -157,7 +149,7 @@ public class MachineGear : MonoBehaviour
 
         initial.Add(true);
         initial.Add(tm.InitialStateIndex());
-        
+
         initialCoroutine = StartProcessing(initial);
 
         StartCoroutine(initialCoroutine);
@@ -179,23 +171,14 @@ public class MachineGear : MonoBehaviour
             if (currentStopCoroutine != null) StopCoroutine(currentStopCoroutine);
 
             currentStopCoroutine = tm.StopMachine(tm.StateByIndex((int)result[1]));
+            
+            GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.red;
+            GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
 
             StartCoroutine(currentStopCoroutine);
         }
     }
-
-    public void OnInputMove(bool side)
-    {
-        if (side)
-        {
-            machine.transform.position += new Vector3(1.5f, 0, 0);
-        }
-        else
-        {
-            machine.transform.position += new Vector3(-1.5f, 0, 0);
-        }
-    }
-
+    
     public TuringMachine BuildMachineFromDescription(TuringMachine tm, string d)
     {
         Alphabet alph = new Alphabet(); ///O ETeimoso
@@ -294,5 +277,90 @@ public class MachineGear : MonoBehaviour
         GameObject reader = GameObject.FindGameObjectWithTag("actualCell");
         Debug.Log(reader.GetComponent<TextMesh>());
     }
-    
+
+    public void LoadLib()
+    {
+        try
+        {
+            LoadDescriptions();
+            //description = System.IO.File.ReadAllText("Assets/Machines/infinite.txt");
+            LoadMachine(machineNumber);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e.Message);
+        }
+    }
+
+    void LoadMachine(int i)
+    {
+        //description = System.IO.File.ReadAllText(machineDescription[i]);
+
+        description = File.ReadAllText(Application.dataPath + "/Machines/Amt.txt");
+
+        tm = BuildMachineFromDescription(tm, description);
+        Debug.Log("Machine Loaded");
+
+        Utils.WriteOnDisplay("stateDisplay", tm.InitialStateIndex() + "");
+    }
+
+    public void LoadDescriptions()
+    {
+        string path = Application.dataPath + "/Machines";
+
+        String[] fileEntries = Directory.GetFiles(path);
+
+        for (int i = 0; i < fileEntries.Length; i++)
+        {
+            if (fileEntries[i].EndsWith(".txt"))
+                machineDescription.Add(fileEntries[i]);
+        }
+    }
+
+    public IEnumerator WaitMachine(float time)
+    {
+        yield return new WaitForSeconds(time);
+
+        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
+        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
+    }
+
+    public void Stop()
+    {
+        StopCoroutine(currentProccessing);
+        try
+        {
+            tm = BuildMachineFromDescription(tm, "");
+        }
+        catch { }
+
+        tm.StopMachine(new State());
+        foreach (GameObject ob in GameObject.FindGameObjectsWithTag("cellTape"))
+        {
+            Destroy(ob);
+        }
+
+        StartCoroutine(DestroyWithDelay());
+
+        input.interactable = true;
+
+        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = true;
+        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
+
+        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
+
+        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.green;
+
+        LoadMachine();
+    }
+
+    IEnumerator DestroyWithDelay()
+    {
+        yield return new WaitForSeconds(1);
+        foreach (GameObject ob in GameObject.FindGameObjectsWithTag("cellTape"))
+        {
+            Destroy(ob);
+        }
+    }
+
 }

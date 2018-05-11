@@ -18,7 +18,7 @@ public class GetCellContent : MonoBehaviour {
             if (GameObject.FindGameObjectWithTag("actualCell") != null)
                 text.text = GameObject.FindGameObjectWithTag("actualCell").GetComponent<TextMesh>().text;
             else
-                text.text = "";
+                text.text = null;
         }
         catch
         {

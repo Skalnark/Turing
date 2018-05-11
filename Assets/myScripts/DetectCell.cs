@@ -12,6 +12,6 @@ public class DetectCell : MonoBehaviour {
 
     private void OnCollisionExit(Collision collision)
     {
-        collision.gameObject.tag = "Untagged";
+        collision.gameObject.tag = "cellTape";
     }
 }

@@ -141,15 +141,17 @@ public class TuringMachine : MonoBehaviour
                     
                     index = df.getNextState();
                     Utils.WriteOnDisplay("stateDisplay", index + "");
-                    if (df.getOutput() == '~')
+                    if (df.getOutput() == 'Ø')
                     {
-                        Utils.WriteOnDisplay("outputDisplay", "");
+                        try
+                        {
+                            Destroy(cellTape);
+                        }
+                        catch { }
                     }
                     else
                     {
-                        Utils.WriteOnDisplay("outputDisplay", df.getOutput() + "");
-
-                        Utils.WriteCellText(df.getOutput());
+                        cellTape.GetComponent<TextMesh>().text = df.getOutput() + "";
                     }
 
                     if (currentMoveMachineCoroutine != null) StopCoroutine(currentMoveMachineCoroutine);
@@ -164,14 +166,18 @@ public class TuringMachine : MonoBehaviour
             else
             {
 
-                DeltaFunction df = state.LookForFunction('~');
+                DeltaFunction df = state.LookForFunction('Ø');
                 if (df != null)
                 {
                     index = df.getNextState();
                     Utils.WriteOnDisplay("stateDisplay", index + "");
-                    if (df.getOutput() == '~')
+                    if (df.getOutput() == 'Ø')
                     {
-                        Utils.WriteOnDisplay("outputDisplay", "");
+                        try
+                        {
+                            Destroy(cellTape);
+                        }
+                        catch { }
 
                         if (currentMoveMachineCoroutine != null) StopCoroutine(currentMoveMachineCoroutine);
 
@@ -185,8 +191,6 @@ public class TuringMachine : MonoBehaviour
                     else
                     {
                         Utils.InstantiateCell(df.getOutput(), cellTapePrefab);
-                        Utils.WriteOnDisplay("outputDisplay", df.getOutput() + "");
-
 
                         if (currentMoveMachineCoroutine != null) StopCoroutine(currentMoveMachineCoroutine);
 
@@ -233,6 +237,7 @@ public class TuringMachine : MonoBehaviour
         rightArrow.SetActive(false);
         stayStill.SetActive(false);
 
+        
         StopAllCoroutines();
     }
     

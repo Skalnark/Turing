@@ -1,1 +1,1 @@
-Infinite looping#01#2#0#1#1,0,S,0|0,1,S,0;void#Esta maquina não para nunca
+Infinite looping#01#2#0#1#1,0,S,0|0,1,S,0|Ø,Ø,S,0;void#Esta maquina não para nunca

@@ -25,6 +25,7 @@ TagManager:
   - StepButtonLight
   - input
   - slider
+  - readDisplay
   layers:
   - Default
   - TransparentFX

@@ -70,6 +70,14 @@ public class Utils : MonoBehaviour {
     //enquanto isso colocar as celulas no tape
     public static void InputToTape(InputField input, GameObject cellTapePrefab)
     {
+        foreach (GameObject ob in GameObject.FindGameObjectsWithTag("cellTape"))
+        {
+            Destroy(ob);
+        }
+        foreach (GameObject ob in GameObject.FindGameObjectsWithTag("actualCell"))
+        {
+            Destroy(ob);
+        }
         TuringMachine tm = GameObject.FindGameObjectWithTag("GameController").GetComponent<TuringMachine>();
 
         GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
@@ -128,11 +136,6 @@ public class Utils : MonoBehaviour {
     {
         GameObject reader = GameObject.FindGameObjectWithTag("actualCell");
         reader.GetComponent<TextMesh>().text = t + "";
-    }
-
-    public void DebugCellText()
-    {
-        Debug.Log(GameObject.FindGameObjectWithTag("actualCell").GetComponent<TextMesh>().text);
     }
 
     public void Info()

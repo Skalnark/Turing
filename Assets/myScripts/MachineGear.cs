@@ -256,18 +256,9 @@ public class MachineGear : MonoBehaviour
     public void ReceiveTape()
     {
         LoadMachine();
-        foreach (GameObject ob in GameObject.FindGameObjectsWithTag("cellTape"))
-        {
-            Destroy(ob);
-        }
-        try
-        {
+
             Utils.InputToTape(input, cellTapePrefab);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e);
-        }
+        
         input.GetComponent<InputField>().text = "";
 
     }
@@ -295,8 +286,14 @@ public class MachineGear : MonoBehaviour
     void LoadMachine(int i)
     {
         //description = System.IO.File.ReadAllText(machineDescription[i]);
-
-        description = File.ReadAllText(Application.dataPath + "/Machines/Amt.txt");
+        Debug.Log(Application.dataPath + " datapath");
+        Debug.Log(Application.streamingAssetsPath + " sdatapath");
+        if(Directory.Exists(Application.streamingAssetsPath))
+            description = File.ReadAllText(Application.streamingAssetsPath + "/Machines/Amt.txt");
+        else
+        {
+            Directory.CreateDirectory(Application.streamingAssetsPath + "Machines");
+        }
 
         tm = BuildMachineFromDescription(tm, description);
         Debug.Log("Machine Loaded");
@@ -327,15 +324,20 @@ public class MachineGear : MonoBehaviour
 
     public void Stop()
     {
-        StopCoroutine(currentProccessing);
         try
         {
+            StopCoroutine(currentProccessing);
             tm = BuildMachineFromDescription(tm, "");
         }
         catch { }
 
         tm.StopMachine(new State());
+
         foreach (GameObject ob in GameObject.FindGameObjectsWithTag("cellTape"))
+        {
+            Destroy(ob);
+        }
+        foreach (GameObject ob in GameObject.FindGameObjectsWithTag("actualCell"))
         {
             Destroy(ob);
         }

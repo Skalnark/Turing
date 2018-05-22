@@ -1,5 +1,5 @@
 ﻿
-# Turing Machine
+# Turing
 
 #### Introduction
 This is a deterministic full functional turing machine simulator made up in Unity5. 

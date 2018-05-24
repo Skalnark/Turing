@@ -1,33 +1,24 @@
 ﻿
-# Turing Machines 
+# Turing
 
-(Precismos de um nome pro software)
+#### Introduction
+This is a deterministic full functional turing machine simulator made up in Unity5. 
+To utilize the machine, you'll need to create on its file folder, a directory on tm_Data called "Machines" and will need to put the machine descriptions on there.
 
-## TODO List | Parte 1 do Projeto
-- ### TuringMachine.cs
-	- **Implementar a função de leitura de arquivo contendo a descrição da máquina, a função deverá instanciar a máquina.**
-	- **Implementar a função que grava máquina registrada em arquivo.**
-		- Implementar a função de registro de máquina, que deverá também salvar a máquina em outro arquivo. 
-			- Criada uma função para pegar o registro de uma máquina inserida e salvar no disco ✓
-		- Criar a cena de registro de máquina.
-	- **Implementar as funções de início e parada de processamento (estudar uso de thread em Unity5).**
-- ### State.cs
-	- **Alterar a função que processa a profundidade da recursividade da função State.process() para que ela exiba suas mensagens no quadro de aviso**
-		- A função State.process() continua precisando da implementação das chamadas de função para fazer brilhar os botões de aceitação e rejeição. 
-- ### MachineGear.cs
-	- **Fazer com que o movimento de OnInputMove() seja incrementado gradualmente, para criar um movimento mais fluído.**
-	- **Concluir a implementação da função OnSymbolInsert(), fazendo que o objeto da fita infinita aumente de acordo com o número de símbolos inseridos.**
-- ### Utils.cs
-	- **Essa função deve conter todas as funções genéricas necessárias, pra garantir a legibilidade e o reaproveitamento de código.**
-		- Todas as funções estáticas deverão estar aqui.
-- ### CameraControl.cs
-	- **Precisamos limitar para onde a máquina e a luz que acompanha a máquina podem ir baseado no tamanho da fita.**
-- ### Funcionalidades faltando
-	- **Precisamos criar uma lista encadeada que una as células da fita de entrada, pra que saibamos qual o primeiro símbolo, qual o último e não tenhamos problema em remover símbolos.**
-	- **Para a inserção dos valores de cada célula, precisamos criar dois tipos de inserção:**
-		- O primeiro tipo deverá ser simplesmente uma caixa de texto onde o usuário diz o input, para agilizar o processo de inserção.
-		- O segundo tipo deverá ser um tipo de "botão" de cada célula, que permita o usuário clicar na célula e inserir um valor pra ela.
-	- **Precisamos criar os botões de ligar e desligar a máquina.**
-		-  Sem a desculpa esfarrapada de *"Ah mas eu não sei usar o blender"* por que eu também não sei e fiz mesmo assim. Youtube tá aí pra isso).
-	- **Precisamos criar uma variável global que determine a velocidade de processamento.**
-		-  O usuário pode querer apenas ver o resultado do processamento, ou pode querer ver a máquina trabalhando.
+This software is in development phase, so we have no proper interface.
+
+We already have 3 descriptions on this repository, on the "Assets/Machines". One of them, the "castor" machine implements a 6+accept states Busy Beaver machine, there is also a "clear" wich recognizes machines with the same number of 'w's and 'q's and then clear the tape, and "palindromo" recognizes palindromos with 'i's and 'o's.
+
+#### Coding
+You can write your own machines by following the syntax. The machine is coded on the following structure:
+
+Name#alphabet#number of states#initial state#final state#function1 from state 0|function2 from state 0;function1 from state 1...;'void' to represent a state without functions#machine's description
+
+The function syntax is on the format a,b,R,0
+
+where the 'a' is the symbol readed, b is the symbol writed, R is the side from where to move (R is right, L is left, S is stay) and '0' is the state from where to go.
+
+the alphabet is not seprated by commas or other things, if your alphabet is formed by 'a', 'b', and 'c', so you will input it on the description as 'abc'.
+
+### Loading the machine
+After place the description on the folder, You'll need to tape it's name on the input field on the bottom of the tape. The red button stops the machine if it's not working.

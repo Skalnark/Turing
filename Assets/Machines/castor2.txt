@@ -1,0 +1,1 @@
+Castor2#1#3#0#2#Ø,1,R,1|1,1,L,1;Ø,1,L,0|1,1,R,2#Maquina do castor com 2+1 estados 

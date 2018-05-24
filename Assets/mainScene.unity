@@ -2291,7 +2291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2961eaa866fd6dd4fbde7ae6e3e8ac19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 20
   leftArrow: {fileID: 706977288}
   rightArrow: {fileID: 765445227}
   stayStill: {fileID: 526886986}

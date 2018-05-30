@@ -1,1 +1,1 @@
-Castor#b#7#0#6#Ø,b,R,1|b,Ø,L,4;Ø,b,L,2|b,Ø,R,0;Ø,b,L,3|b,Ø,R,2;Ø,b,L,4|b,Ø,L,5;Ø,b,L,0|b,b,L,2;Ø,b,L,4|b,b,R,6#Algoritmo do castor com 6(7) estados que reconhece o alfabeto com o símbolo 'b' e o vazio da fita
+Castor#1#7#0#6#Ø,1,R,1|1,Ø,L,4;Ø,1,L,2|1,Ø,R,0;Ø,1,L,3|1,Ø,R,2;Ø,1,L,4|1,Ø,L,5;Ø,1,L,0|1,1,L,2;Ø,1,L,4|1,1,R,6#Algoritmo do castor com 6(7) estados que reconhece o alfabeto com o símbolo '1' e o vazio da fita

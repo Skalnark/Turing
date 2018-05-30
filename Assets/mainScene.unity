@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -39,6 +39,7 @@ RenderSettings:
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0.00840925, g: 0.008749962, b: 0.00840925, a: 1}
+  m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -54,11 +55,10 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_TextureWidth: 1024
-    m_TextureHeight: 1024
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -803,75 +803,6 @@ Prefab:
     - target: {fileID: 1171488560362882, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
       propertyPath: m_Name
       value: TuringMachine
-      objectReference: {fileID: 0}
-    - target: {fileID: 4792141180490086, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 2.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4792141180490086, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 0.64
-      objectReference: {fileID: 0}
-    - target: {fileID: 4792141180490086, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0.478
-      objectReference: {fileID: 0}
-    - target: {fileID: 4609195447529506, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -61.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4609195447529506, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -5.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 114359354183242490, guid: 8ba669c1abda38e49a49bb5c3507d89c,
-        type: 2}
-      propertyPath: speed
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4482761840203152, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -60.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4609195447529506, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 101.99
-      objectReference: {fileID: 0}
-    - target: {fileID: 4609195447529506, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalScale.x
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4609195447529506, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalScale.y
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 4609195447529506, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_LocalScale.z
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 114359354183242490, guid: 8ba669c1abda38e49a49bb5c3507d89c,
-        type: 2}
-      propertyPath: angle.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1114097311012452, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}
-      propertyPath: m_TagString
-      value: readDisplay
-      objectReference: {fileID: 0}
-    - target: {fileID: 114359354183242490, guid: 8ba669c1abda38e49a49bb5c3507d89c,
-        type: 2}
-      propertyPath: angle.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114359354183242490, guid: 8ba669c1abda38e49a49bb5c3507d89c,
-        type: 2}
-      propertyPath: angle.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 20209784840490812, guid: 8ba669c1abda38e49a49bb5c3507d89c,
-        type: 2}
-      propertyPath: field of view
-      value: 55
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8ba669c1abda38e49a49bb5c3507d89c, type: 2}

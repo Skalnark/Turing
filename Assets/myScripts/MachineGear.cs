@@ -127,6 +127,7 @@ public class MachineGear : MonoBehaviour
 
     public void LoadMachine()
     {
+        Utils.ClearTape();
         tm = BuildMachineFromDescription(tm, description);
         Debug.Log("machine loaded");
 

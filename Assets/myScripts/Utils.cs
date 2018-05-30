@@ -65,10 +65,7 @@ public class Utils : MonoBehaviour {
         light.SetActive(false);
     }
 
-    //fazer uma função que receberá uma string como input, através do inputField
-    //processar a string, checando se o alfabeto existe
-    //enquanto isso colocar as celulas no tape
-    public static void InputToTape(InputField input, GameObject cellTapePrefab)
+    public static void ClearTape()
     {
         foreach (GameObject ob in GameObject.FindGameObjectsWithTag("cellTape"))
         {
@@ -78,6 +75,12 @@ public class Utils : MonoBehaviour {
         {
             Destroy(ob);
         }
+    }
+
+    public static void InputToTape(InputField input, GameObject cellTapePrefab)
+    {
+        ClearTape();
+
         TuringMachine tm = GameObject.FindGameObjectWithTag("GameController").GetComponent<TuringMachine>();
 
         GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;

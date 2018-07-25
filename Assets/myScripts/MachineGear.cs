@@ -219,30 +219,42 @@ public class MachineGear : MonoBehaviour
 
     public TuringMachine BuildMachineFromDescription(string name, string d)
     {
-        String description = d.Replace(' ', '\0');
-        description = description.Replace('\n', '\0');
+        String description = d.Replace(' ', '\0').Replace('\n', '\0');
 
-        String[] allMachines = description.Split('{');
+        String[] allMachines = description.Replace('}', '\0').Split('{');
 
-        foreach (String n in allMachines)
+        foreach (String m in allMachines)
         {
-            string machineName = null;
-            Alphabet alph;
-            State[] states;
+            String desc = m.Split('#');
+            string machineName = desc[0];
+            Alphabet alph = new Alphabet();
 
-            DeltaFunction[] df;
-            int j = 0;
-
-            while (!n[j].Equals('\0'))
-            {
-                for (int i = 0; i < n.Length; i++)
-                {
-                    if (!n[i].Equals('#') )
-                    {
-                        machineName += n[i];
-                    }
-                }
+            foreach(char c in desc[1]){
+                alph.InsertSymbol(c);
             }
+            int nStates = int.Parse(desc[2]);
+            State[nStates] states;
+
+            List<String> dFuncString = desc[4].Split("df:");
+            List<DeltaFunction> functions;
+            for(int i = 0; i < nStates; i++){
+                functions = new List<DeltaFunction>();
+                foreach(string f in dFuncString){
+                    DeltaFunction df = new DeltaFunction(
+                        f[0], f[2], f[4], int.Parse(f[6]));
+                    functions.Add(df);
+                }
+                states[i] = new State(DeltaFunction(functions));
+            }
+
+            states[int.Parse(desc[3])].DefineIdentity(Constants.FINAL);
+
+            TuringMachine lm = new TuringMachine(
+                machineName,
+                alph,
+                states,
+                //REMOVER BOTÕES DE LUZ
+                );
                 
         }
 

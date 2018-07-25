@@ -1,1 +1,1 @@
-palindromo#io#8#0#6#o,Ø,R,1|i,Ø,R,4|Ø,Ø,S,6;o,o,R,1|i,i,R,1|Ø,Ø,L,2;o,Ø,L,3|i,i,S,7|Ø,Ø,S,6;o,o,L,3|i,i,L,3|Ø,Ø,R,0;o,o,R,4|i,i,R,4|Ø,Ø,L,5;i,Ø,L,3|o,o,S,7|Ø,Ø,S,6;void;void#Essa maquina processa palindromos formados por "i" e "o"
+﻿palindromo#io#8#0#6#o,Ø,R,1|i,Ø,R,4|Ø,Ø,S,6;o,o,R,1|i,i,R,1|Ø,Ø,L,2;o,Ø,L,3|i,i,S,7|Ø,Ø,S,6;o,o,L,3|i,i,L,3|Ø,Ø,R,0;o,o,R,4|i,i,R,4|Ø,Ø,L,5;i,Ø,L,3|o,o,S,7|Ø,Ø,S,6;void;void#Essa maquina processa palindromos formados por "i" e "o"

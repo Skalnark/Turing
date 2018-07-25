@@ -28,6 +28,7 @@ using UnityEngine.UI;
  */
 public class MachineGear : MonoBehaviour
 {
+    public List<String> names;
     string description;
     public string nome;
     public float speed;
@@ -38,12 +39,23 @@ public class MachineGear : MonoBehaviour
     public GameObject cellTapePrefab;
     public GameObject machine;
     public GameObject greenLight, redLight;
-    public GameObject startButtonLight;
 
     public TuringMachine tm;
+    private List<TuringMachine> tms = new List<TuringMachine>();
 
     public InputField input;
     public InputField input2;
+
+    private InputField inputField;
+    private InputField tapeInput;
+
+    private Button processButton;
+    private Button startMachineButton;
+    
+    private TextMesh stateDisplay;
+
+    private Light stepButtonLight;
+    private Light startButtonLight;
 
     private IEnumerator currentStopCoroutine;
     private IEnumerator currentProccessing;
@@ -56,6 +68,13 @@ public class MachineGear : MonoBehaviour
 
     void Start()
     {
+        inputField = GameObject.FindGameObjectWithTag("input").GetComponent<InputField>();
+        startMachineButton = GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>();
+        stepButtonLight = GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>();
+        startButtonLight = GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>();
+        processButton = GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>();
+        stateDisplay = GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>();
+        tapeInput = GameObject.FindGameObjectWithTag("tapeInput").GetComponent<InputField>();
         tm = GetComponent<TuringMachine>();
     }
 
@@ -83,15 +102,16 @@ public class MachineGear : MonoBehaviour
 
     public void ProcessState()
     {
-        GameObject.FindGameObjectWithTag("input").GetComponent<InputField>().interactable = false;
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 0;
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = false;
-        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = false;
+        inputField.interactable = false;
+        stepButtonLight.intensity = 0;
+        processButton.interactable = false;
+        startMachineButton.interactable = false;
+
         int actualState = tm.InitialStateIndex();
         string input = null;
         try
         {
-            input = "" + int.Parse(GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>().text);
+            input = "" + int.Parse(stateDisplay.text);
         }
         catch {}
 
@@ -136,13 +156,13 @@ public class MachineGear : MonoBehaviour
 
     public void StartMachine()
     {
-        GameObject.FindGameObjectWithTag("input").GetComponent<InputField>().interactable = false;
+        tapeInput.interactable = false;
 
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = false;
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 0;
-        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = false;
+        processButton.interactable = false;
+        stepButtonLight.intensity = 0;
+        startMachineButton.interactable = false;
 
-        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.blue;
+        startButtonLight.color = Color.blue;
 
         startButtonLight.GetComponent<Light>().color = Color.green;
 
@@ -173,19 +193,63 @@ public class MachineGear : MonoBehaviour
 
             currentStopCoroutine = tm.StopMachine(tm.StateByIndex((int)result[1]));
             
-            GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.red;
-            GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
+            startButtonLight.color = Color.red;
+            startButtonLight.GetComponent<Light>().intensity = 2.5f;
 
             StartCoroutine(currentStopCoroutine);
         }
     }
-    
-    public TuringMachine BuildMachineFromDescription(TuringMachine tm, string d)
-    {
-        Alphabet alph = new Alphabet(); ///O ETeimoso
 
+    public void LoadMachinesFromMemory()
+    {
+        int i = 0;
+        Alphabet alph = new Alphabet(); ///O ETeimoso
+        String description = d.Replace(' ', '\0');
+        description = description.Replace('\n', '\0');
+
+        String[] allMachines = description.Split('{');
+
+        foreach (String desc in allMachines)
+        {
+            String[] mDescription = desc.Split('#');
+            names.Add(mDescription[i]);
+            i++;
+        }
+    }
+
+    public TuringMachine BuildMachineFromDescription(string name, string d)
+    {
+        String description = d.Replace(' ', '\0');
+        description = description.Replace('\n', '\0');
+
+        String[] allMachines = description.Split('{');
+
+        foreach (String n in allMachines)
+        {
+            string machineName = null;
+            Alphabet alph;
+            State[] states;
+
+            DeltaFunction[] df;
+            int j = 0;
+
+            while (!n[j].Equals('\0'))
+            {
+                for (int i = 0; i < n.Length; i++)
+                {
+                    if (!n[i].Equals('#') )
+                    {
+                        machineName += n[i];
+                    }
+                }
+            }
+                
+        }
+
+
+        /*
         //Split the string in components
-        String[] description = d.Split('#');
+        String[] description = d.Split('');
 
         string name = description[0];
         string machineDescription = description[6];
@@ -249,7 +313,7 @@ public class MachineGear : MonoBehaviour
         }
 
         tm.InstanciateMachine(name, alph, s, machineDescription, cellTapePrefab, redLight, greenLight);
-
+        */
         return tm;
     }
 
@@ -262,44 +326,6 @@ public class MachineGear : MonoBehaviour
         
         input.GetComponent<InputField>().text = "";
 
-    }
-
-    public void ReadCellDebug()
-    {
-        GameObject reader = GameObject.FindGameObjectWithTag("actualCell");
-        Debug.Log(reader.GetComponent<TextMesh>());
-    }
-
-    public void LoadLib()
-    {
-        try
-        {
-            LoadDescriptions();
-            //description = System.IO.File.ReadAllText("Assets/Machines/infinite.txt");
-            LoadMachine(machineNumber);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-    }
-
-    void LoadMachine(int i)
-    {
-        //description = System.IO.File.ReadAllText(machineDescription[i]);
-        Debug.Log(Application.dataPath + " datapath");
-        Debug.Log(Application.streamingAssetsPath + " sdatapath");
-        if(Directory.Exists(Application.streamingAssetsPath))
-            description = File.ReadAllText(Application.streamingAssetsPath + "/Machines/Amt.txt");
-        else
-        {
-            Directory.CreateDirectory(Application.streamingAssetsPath + "Machines");
-        }
-
-        tm = BuildMachineFromDescription(tm, description);
-        Debug.Log("Machine Loaded");
-
-        Utils.WriteOnDisplay("stateDisplay", tm.InitialStateIndex() + "");
     }
 
     public void LoadDescriptions()
@@ -319,8 +345,8 @@ public class MachineGear : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
 
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
+        processButton.interactable = true;
+        stepButtonLight.intensity = 2.5f;
     }
 
     public void Stop()
@@ -347,12 +373,12 @@ public class MachineGear : MonoBehaviour
 
         input.interactable = true;
 
-        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = true;
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
+        startMachineButton.interactable = true;
+        processButton.interactable = true;
 
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
+        stepButtonLight.intensity = 2.5f;
 
-        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.green;
+        startButtonLight.color = Color.green;
 
         LoadMachine();
     }

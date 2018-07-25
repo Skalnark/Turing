@@ -260,7 +260,6 @@ public class TuringMachine : MonoBehaviour
                 machine.transform.position += new Vector3(Time.deltaTime*speed, 0, 0);
                 yield return null;
             }
-            machine.transform.position = target;
         }
 
         else if(side == 'L')
@@ -276,7 +275,6 @@ public class TuringMachine : MonoBehaviour
                 machine.transform.position -= new Vector3(Time.deltaTime*speed, 0, 0);
                 yield return null;
             }
-            machine.transform.position = target;
         }
         else
         {
@@ -284,6 +282,8 @@ public class TuringMachine : MonoBehaviour
             currentBlinkCoroutine = BlinkStay();
             StartCoroutine(currentBlinkCoroutine);
         }
+
+        machine.transform.position = target;
 
         yield return new WaitForSeconds(0.2f);
     }

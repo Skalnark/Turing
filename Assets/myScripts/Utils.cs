@@ -85,7 +85,7 @@ public class Utils : MonoBehaviour {
 
         GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
         GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = true;
-
+        GameObject.FindGameObjectWithTag("tapeInput").GetComponent<Dropdown>().interactable = true;
         GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
 
         GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.green;
@@ -95,7 +95,7 @@ public class Utils : MonoBehaviour {
 
         foreach (char c in cellsInChar)
         {
-            if (!tm.Alphabet().LookForSymbol(c))
+            if (!tm.GetAlphabet().LookForSymbol(c))
             {
                 GameObject.FindGameObjectWithTag("GameController").GetComponent<Utils>().showWait = true;
                 return;

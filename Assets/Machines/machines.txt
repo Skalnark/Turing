@@ -1,0 +1,47 @@
+﻿{
+	Beaver4#
+	1#
+	0#
+	2#
+	def
+		Ø, 1, R, 1;
+		1, 1, L, 1;
+	def
+		Ø, 1, L, 0;
+		1, Ø, L, 2;
+	def
+		Ø, 1, R, 2;
+		1, 1, L, 3;
+	def
+		Ø, 1, R, 3;
+		1, Ø, R, 0;
+	#
+	Implementation of the 4-states busy beaver machine. 
+}
+
+{
+	Beaver6#
+	1#
+	0#
+	5#
+	def
+		Ø, 1, R, 1;
+		1, Ø, L, 4;
+	def
+		Ø, 1, L, 2;
+		1, Ø, R, 0;
+	def	
+		Ø, 1, L, 3;
+		1, Ø, R, 2;
+	def
+		Ø, 1, L, 4;
+		1, Ø, L, 5;
+	def
+		Ø, 1, L, 0;
+		1, 1, L, 2;
+	def
+		Ø, 1, L, 4;
+		1, 1, R, 5;
+#Implementation of the 6-states busy beaver machine. 
+}
+

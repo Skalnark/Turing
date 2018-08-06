@@ -33,50 +33,37 @@ public class TuringMachine : MonoBehaviour
 
 	List<State> states;
     Alphabet alph = new Alphabet();
-    GameObject cellTapePrefab;
-    GameObject crossLight;
-    GameObject correctLight;
+    public GameObject cellTapePrefab;
+    public GameObject crossLight;
+    public GameObject correctLight;
 
-    public GameObject leftArrow, rightArrow, stayStill;
+    public GameObject leftArrow;
+    public GameObject rightArrow;
+    public GameObject stayStill;
 
     IEnumerator currentStopCoroutine;
     IEnumerator currentMoveMachineCoroutine;
     IEnumerator currentBlinkCoroutine;
 
-    public TuringMachine()
+    public void InstantiateMachine(MachineList tm)
     {
-        tmName = null;
-        alph = null;
-        states = null;
-        description = null;
-        cellTapePrefab = null;
-        crossLight = null;
-        correctLight = null;
-    }
-
-    public void InstanciateMachine(string name, Alphabet alph, List<State> states, string description, 
-        GameObject cellTapePrefab, GameObject crossLight, GameObject correctLight)
-    {
-        this.tmName = name;
-        this.alph = alph;
-        this.states = states;
-        this.description = description;
-        this.cellTapePrefab = cellTapePrefab;
-        this.correctLight = correctLight;
-        this.crossLight = crossLight;
+        this.tmName = tm.mName;
+        this.alph = tm.alph;
+        this.states = tm.states;
+        this.description = tm.description;
     }
 
     public int InitialStateIndex()
     {
         int index = -1;
+
         for (int i = 0; i < states.Count; i++)
         {
-            if (states[i].Identity() == Constants.INITIAL) {
-                index = i;
+            if (states[i].Initial())
+            {
                 return i;
             }
         }
-
         return index;
     }
 
@@ -110,7 +97,7 @@ public class TuringMachine : MonoBehaviour
         return tmName;
     }
 
-    public Alphabet Alphabet()
+    public Alphabet GetAlphabet()
     {
         return alph;
     }
@@ -118,6 +105,11 @@ public class TuringMachine : MonoBehaviour
     public string GetDescription()
     {
         return description;
+    }
+
+    public List<State> GetStates()
+    {
+        return states;
     }
 
     //This function will set the alphabet to the required patterns
@@ -130,15 +122,14 @@ public class TuringMachine : MonoBehaviour
     {
         ArrayList whatReturn = new ArrayList();
         GameObject cellTape = GameObject.FindGameObjectWithTag("actualCell");
-        
-        if(state.HaveFunctions())
+
+        if (state.HaveFunctions())
         {
             if (cellTape != null)
             {
                 DeltaFunction df = state.LookForFunction(char.Parse(cellTape.GetComponent<TextMesh>().text));
                 if (df != null)
                 {
-                    
                     index = df.getNextState();
                     Utils.WriteOnDisplay("stateDisplay", index + "");
                     if (df.getOutput() == 'Ø')
@@ -165,7 +156,6 @@ public class TuringMachine : MonoBehaviour
             }
             else
             {
-
                 DeltaFunction df = state.LookForFunction('Ø');
                 if (df != null)
                 {

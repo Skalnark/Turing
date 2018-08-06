@@ -1,4 +1,3 @@
-[wip]
 ## Introduction
 
 This is a single tape deterministic Turing Machine simulator made up in Unity5. To run it, you must add the machines descriptions.

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,7 +29,7 @@ using UnityEngine.UI;
  */
 public class MachineGear : MonoBehaviour
 {
-    string description;
+    public List<String> names;
     public string nome;
     public float speed;
     public int machineNumber = 0;
@@ -38,60 +39,78 @@ public class MachineGear : MonoBehaviour
     public GameObject cellTapePrefab;
     public GameObject machine;
     public GameObject greenLight, redLight;
-    public GameObject startButtonLight;
 
     public TuringMachine tm;
+    public List<MachineList> tms = new List<MachineList>();
 
     public InputField input;
-    public InputField input2;
+
+    private InputField inputField;
+
+    private Button processButton;
+    private Button startMachineButton;
+    
+    private TextMesh stateDisplay;
+
+    private Light stepButtonLight;
+    private Light startButtonLight;
 
     private IEnumerator currentStopCoroutine;
     private IEnumerator currentProccessing;
     private IEnumerator initialcorroutine;
     private IEnumerator initialCoroutine;
-
-    public List<string> machineDescription;
+    
     private bool showStop;
     public GUISkin warning;
+    public Dropdown dd;
 
     void Start()
     {
         tm = GetComponent<TuringMachine>();
-    }
+        inputField = GameObject.FindGameObjectWithTag("input").GetComponent<InputField>();
+        startMachineButton = GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>();
+        stepButtonLight = GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>();
+        startButtonLight = GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>();
+        processButton = GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>();
+        stateDisplay = GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>();
 
-    public void SearchDescription()
-    {
-        string path = null;
-
-        try
+        if(File.Exists(Application.dataPath + "/Machines/machines.txt"))
+            LoadAllMachines(File.ReadAllText(Application.dataPath + "/Machines/machines.txt"));
+        else
         {
-            path = Application.dataPath + "/Machines/" + nome + ".txt";
-            Debug.Log(path);
-            description = File.ReadAllText(path);
+            File.Create(Application.dataPath + "/Machines/machines.txt");
         }
-        catch { }
-        tm = null;
-        tm = GetComponent<TuringMachine>();
-
+        LoadOptions();
         LoadMachine();
     }
 
-    public void UpdateName()
+    public void LoadOptions()
     {
-        nome = input2.text;
+        dd.ClearOptions();
+        names.Sort();
+        List<Dropdown.OptionData> list = new List<Dropdown.OptionData>();
+        foreach(string s in names)
+        {
+            Dropdown.OptionData op = new Dropdown.OptionData();
+            op.text = s;
+            list.Add(op);
+        }
+
+        dd.AddOptions(list);
     }
 
     public void ProcessState()
     {
-        GameObject.FindGameObjectWithTag("input").GetComponent<InputField>().interactable = false;
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 0;
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = false;
-        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = false;
+        inputField.interactable = false;
+        stepButtonLight.intensity = 0;
+        processButton.interactable = false;
+        startMachineButton.interactable = false;
+
         int actualState = tm.InitialStateIndex();
         string input = null;
         try
         {
-            input = "" + int.Parse(GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>().text);
+            input = "" + int.Parse(stateDisplay.text);
         }
         catch {}
 
@@ -128,21 +147,19 @@ public class MachineGear : MonoBehaviour
     public void LoadMachine()
     {
         Utils.ClearTape();
-        tm = BuildMachineFromDescription(tm, description);
-        Debug.Log("machine loaded");
-
+        FindMachine(dd.captionText.text);
         Utils.WriteOnDisplay("stateDisplay", tm.InitialStateIndex() + "");
     }
 
     public void StartMachine()
     {
-        GameObject.FindGameObjectWithTag("input").GetComponent<InputField>().interactable = false;
+        dd.interactable = false;
 
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = false;
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 0;
-        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = false;
+        processButton.interactable = false;
+        stepButtonLight.intensity = 0;
+        startMachineButton.interactable = false;
 
-        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.blue;
+        startButtonLight.color = Color.blue;
 
         startButtonLight.GetComponent<Light>().color = Color.green;
 
@@ -173,84 +190,95 @@ public class MachineGear : MonoBehaviour
 
             currentStopCoroutine = tm.StopMachine(tm.StateByIndex((int)result[1]));
             
-            GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.red;
-            GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
+            startButtonLight.color = Color.red;
+            startButtonLight.GetComponent<Light>().intensity = 2.5f;
 
             StartCoroutine(currentStopCoroutine);
         }
     }
-    
-    public TuringMachine BuildMachineFromDescription(TuringMachine tm, string d)
+
+    public void LoadAllMachines(string description)
     {
-        Alphabet alph = new Alphabet(); ///O ETeimoso
+        description = RemoveString(description, Environment.NewLine);
+        description = RemoveString(description, "{");
+        description = RemoveString(description, "\t");
 
-        //Split the string in components
-        String[] description = d.Split('#');
-
-        string name = description[0];
-        string machineDescription = description[6];
-
-        //Split the Alphabet in symbols
-        char[] symbols = description[1].ToCharArray();
-
-        //Split the delta functions in functions from each state
-        String[] deltaFunctions = description[5].Split(';');
-
-
-        int initial = int.Parse(description[3]);
-        int final = int.Parse(description[4]);
-
-        State[] states = new State[int.Parse(description[2])];
-
-        for (int i = 0; i < states.Length; i++)
+        List<String> refine = new List<string>();
+        
+        foreach(String m in description.Split('}'))
         {
-            states[i] = new State();
+            if (m.Length > 1) refine.Add(m);
         }
 
-        foreach (char c in symbols)
-        {
-            alph.InsertSymbol(c);
-        }
+        String[] allMachines = refine.ToArray();
 
-
-        for (int i = 0; i < deltaFunctions.Length; i++)
+        foreach (String m in allMachines)
         {
-            if (!deltaFunctions[i].Equals("void"))
+            String[] desc = m.Split('#');
+
+            string machineName = desc[0];
+            Alphabet alph = new Alphabet();
+            string mDesc = desc[4];
+
+            foreach (char c in desc[1]) {
+                alph.InsertSymbol(c);
+            }
+
+            int nStates = int.Parse(desc[2]);
+            List<State> states = new List<State>();
+
+            desc[4] = ReplaceString(desc[4], "def", ":");
+
+            String[] rawDFunctions = desc[4].Split(':');
+            
+            for(int i = 0; i < rawDFunctions.Length; i++)
             {
-                String[] functions = deltaFunctions[i].Split('|');
-                List<DeltaFunction> df = new List<DeltaFunction>();
-                
-                for (int j = 0; j < functions.Length; j++)
+                rawDFunctions[i] = RemoveString(rawDFunctions[i], " ");
+            }
+
+            foreach(string dFuncString in rawDFunctions) {
+                List<DeltaFunction> functions = new List<DeltaFunction>();
+
+                if (dFuncString.Length > 2)
                 {
-                    string f = functions[j];
-                    char input = f[0];
-                    char output = f[2];
-                    char side = f[4];
-                    char sState = f[6];
-                    
-                    int state;
-                    
-                    state = sState - '0';
+                    if (dFuncString.Contains("void"))
+                    {
+                        states.Add(new State());
+                    }
+                    else
+                    {
+                        string[] atomicFuncString = dFuncString.Split(';');
+                        
+                        foreach (string function in atomicFuncString)
+                        {
+                            if (!function.Contains("void") && function.Length > 3)
+                            {
+                                string[] aChar = function.Split(',');
+                                List<char> fchar = new List<char>() ;
 
-                    DeltaFunction DF = new DeltaFunction(input, output, side, state);
+                                foreach (string s in aChar)
+                                {
+                                    if(s.Length == 1)
+                                    fchar.Add(char.Parse(s));
+                                }
+                                
+                                DeltaFunction df = new DeltaFunction(fchar[0], fchar[1], fchar[2], int.Parse(fchar[3] + ""));
 
-                    df.Add(DF);
-                    states[i].SetFunctions(df);
+                                functions.Add(df);
+                            }
+                        }
+                        states.Add(new State(functions));
+                    }
                 }
             }
+            states[int.Parse(desc[2])].DefineIdentity(Constants.FINAL);
+            states[int.Parse(desc[1])].DefineInitial();
+
+            names.Add(machineName);
+            
+            tms.Add(new MachineList(alph, states, machineName, mDesc));
+            
         }
-        states[initial].DefineIdentity(Constants.INITIAL);
-        states[final].DefineIdentity(Constants.FINAL);
-
-        List<State> s = new List<State>();
-        for (int i = 0; i < states.Length; i++)
-        {
-            s.Add(states[i]);
-        }
-
-        tm.InstanciateMachine(name, alph, s, machineDescription, cellTapePrefab, redLight, greenLight);
-
-        return tm;
     }
 
 
@@ -264,63 +292,11 @@ public class MachineGear : MonoBehaviour
 
     }
 
-    public void ReadCellDebug()
-    {
-        GameObject reader = GameObject.FindGameObjectWithTag("actualCell");
-        Debug.Log(reader.GetComponent<TextMesh>());
-    }
-
-    public void LoadLib()
-    {
-        try
-        {
-            LoadDescriptions();
-            //description = System.IO.File.ReadAllText("Assets/Machines/infinite.txt");
-            LoadMachine(machineNumber);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-    }
-
-    void LoadMachine(int i)
-    {
-        //description = System.IO.File.ReadAllText(machineDescription[i]);
-        Debug.Log(Application.dataPath + " datapath");
-        Debug.Log(Application.streamingAssetsPath + " sdatapath");
-        if(Directory.Exists(Application.streamingAssetsPath))
-            description = File.ReadAllText(Application.streamingAssetsPath + "/Machines/Amt.txt");
-        else
-        {
-            Directory.CreateDirectory(Application.streamingAssetsPath + "Machines");
-        }
-
-        tm = BuildMachineFromDescription(tm, description);
-        Debug.Log("Machine Loaded");
-
-        Utils.WriteOnDisplay("stateDisplay", tm.InitialStateIndex() + "");
-    }
-
-    public void LoadDescriptions()
-    {
-        string path = Application.dataPath + "/Machines";
-
-        String[] fileEntries = Directory.GetFiles(path);
-
-        for (int i = 0; i < fileEntries.Length; i++)
-        {
-            if (fileEntries[i].EndsWith(".txt"))
-                machineDescription.Add(fileEntries[i]);
-        }
-    }
-
     public IEnumerator WaitMachine(float time)
     {
         yield return new WaitForSeconds(time);
-
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
+        processButton.interactable = true;
+        stepButtonLight.intensity = 2.5f;
     }
 
     public void Stop()
@@ -328,7 +304,7 @@ public class MachineGear : MonoBehaviour
         try
         {
             StopCoroutine(currentProccessing);
-            tm = BuildMachineFromDescription(tm, "");
+            FindMachine(dd.captionText.text);
         }
         catch { }
 
@@ -346,15 +322,64 @@ public class MachineGear : MonoBehaviour
         StartCoroutine(DestroyWithDelay());
 
         input.interactable = true;
+        dd.interactable = true;
+        startMachineButton.interactable = true;
+        processButton.interactable = true;
 
-        GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>().interactable = true;
-        GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>().interactable = true;
+        stepButtonLight.intensity = 2.5f;
 
-        GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>().intensity = 2.5f;
-
-        GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>().color = Color.green;
+        startButtonLight.color = Color.green;
 
         LoadMachine();
+    }
+
+    public void FindMachine(string seek)
+    {
+        foreach(MachineList t in tms)
+        {
+            if (t.mName.Equals(seek))
+            {
+                tm.InstantiateMachine(t);
+                break;
+            }
+        }
+    }
+
+    public static string RemoveString(string description, string content)
+    {
+        Regex rgx = new Regex(content);
+
+        char[] arraychar = rgx.Replace(description, " ").ToCharArray();
+        description = "";
+
+        foreach (char c in arraychar)
+        {
+            if (c != ' ' && c != '{')
+            {
+                description += c;
+            }
+        }
+
+        return description;
+    }
+
+
+    public static string ReplaceString(string description, string content, string replacement)
+    {
+        Regex rgx = new Regex(content);
+
+        char[] arraychar = rgx.Replace(description, replacement).ToCharArray();
+        description = "";
+
+        foreach (char c in arraychar)
+        {
+            if (c != ' ' && c != '{')
+            {
+                description += c;
+            }
+        }
+
+        return description;
     }
 
     IEnumerator DestroyWithDelay()

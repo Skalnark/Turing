@@ -1,27 +1,25 @@
+[wip]
+## Introduction
 
-﻿
-# Turing
+This is a single tape deterministic Turing Machine simulator made up in Unity5. To run it, you must add the machines descriptions.
 
-#### Introduction
-This is a deterministic full functional turing machine simulator made up in Unity5. 
-To utilize the machine, you'll need to create on its file folder, a directory on tm_Data called "Machines" and will need to put the machine descriptions on there.
+![Turing Machine](https://github.com/Skalnark/Turing/blob/master/images/machine.png)
 
-This software is in development phase, so we have no proper interface.
+### Coding
 
-We already have some descriptions on this repository, on the "Assets/Machines". The "Castor"s files implements Busy Beaver machines.
+To code your own machines, you must use the following sintaxe:
+- machine name#
+- alphabet (no space or commas between symbols)#
+- initial state (starting from zero)#
+- acceptation state (also starting from zero)#
+- functions (each **def** defines a state) #
+- machine description 
 
-#### Coding
-You can write your own machines by following the syntax. The machine is coded on the following structure (no spaces):
+Example:
+![machine description](https://github.com/Skalnark/Turing/blob/master/images/code.png)
 
-**Name**#**alphabet**#**number of states**#**initial state**#**final state**#function1 from state 0 **|** function2 from state 0 **;** function1 from state 1...;**'void' to represent a state without functions**#**machine's description**
-
-The function syntax is on the format **a,b,R,0**
-
-where the **'a'** is the symbol readed, **'b'** is the symbol writed, **R** is the side from where to move (R is right, L is left, S is stay) and **'0'** is the state from where to go.
-
-the alphabet is not seprated by commas or other things, if your alphabet is formed by 'a', 'b', and 'c', so you will input it on the description as 'abc'.
-
-The **'empty'** symbol is marked by the special charactere **Ø**.
-
-### Loading the machine
-After place the description on the folder, You'll need to type it's name on the input field on the bottom of the tape. The red button stops the machine if it's not working.
+ - The **Ø** represents the empty cell.
+- **void** represents a state with no functions,
+- Functions must be separated by "**;**".
+- The machine stops when, in the current state, there is no delta function for this symbol. 
+- Each description mus be between braces "**{** ... **}**".

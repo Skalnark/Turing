@@ -7,15 +7,12 @@ public class SaveMachine
     {
         try
         {
-            if (!File.Exists(path))
+            // Create a file to write to.
+            using (StreamWriter sw = File.CreateText(path))
             {
-                // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(path))
-                {
-                    sw.WriteLine(content);
-                }
+                sw.WriteLine(content);
             }
         }
-        catch { }
+        catch(Exception e) { Console.WriteLine(e); }
     }
 }

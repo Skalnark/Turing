@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 4604346054971034}
   - component: {fileID: 33663665419048680}
   - component: {fileID: 23148972411144172}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: infiniteTape
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2393,7 +2393,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 1f3f76ea3300bce418181059ac1234bc, type: 2}
+  - {fileID: 2100000, guid: c80dfeee5afb2174a8012a08ba2cd1be, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

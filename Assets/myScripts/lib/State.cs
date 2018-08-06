@@ -24,20 +24,23 @@ using UnityEngine;
 */
 public class State
 {
-    private List<DeltaFunction> func; //Will hold the transactional functions for this state
+    private List<DeltaFunction> func = new List<DeltaFunction>(); //Will hold the transactional functions for this state
     private int stateIdentity;
+    private bool isinitial;
     
     //Default Constructor
     public State()
     {
          this.stateIdentity = Constants.NORMAL;
     }
-    public State(DeltaFunction[] func){
+    public State(List<DeltaFunction> func){
     	foreach(DeltaFunction function in func)
         {
             this.func.Add(function);
         }
     	stateIdentity = Constants.NORMAL; //The state will aways be declared as a normal state
+
+        isinitial = false;
     }
 
     public void DefineIdentity(int i){
@@ -50,12 +53,7 @@ public class State
 
     public bool HaveFunctions()
     {
-        try
-        {
-            if (func.Count != 0) return true;
-        }
-        catch { }
-
+        if (func.Count != 0) return true;
         return false;
     }
     public DeltaFunction DFunction(int n){
@@ -100,5 +98,14 @@ public class State
     public List<DeltaFunction> StateFunctions()
     {
         return func;
+    }
+
+    public bool Initial()
+    {
+        return isinitial;
+    }
+    public void DefineInitial()
+    {
+        isinitial = true;
     }
 }

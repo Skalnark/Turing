@@ -14,7 +14,7 @@ To code your own machines, you must use the following sintaxe:
 - functions (each **def** defines a state) #
 - machine description 
 
-####Example:
+#### Example:
 
 ![machine description](https://github.com/Skalnark/Turing/blob/master/images/code.png)
 

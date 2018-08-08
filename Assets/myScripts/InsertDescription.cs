@@ -10,21 +10,30 @@ public class InsertDescription : MonoBehaviour
 
     public InputField textField;
     public TextMesh displayer;
+    public TextMesh location;
     IEnumerator error;
 
     private void Start()
     {
         error = Error();
 
-        if (!Directory.Exists(Application.dataPath + "/Machines"))
+        if (!Directory.Exists(Application.persistentDataPath + "/Machines"))
         {
-            Directory.CreateDirectory(Application.dataPath + "/Machines");
+            Directory.CreateDirectory(Application.persistentDataPath + "/Machines");
 
-            if (!File.Exists(Application.dataPath + "/Machines/machines.txt"))
+            if (!File.Exists(Application.persistentDataPath + "/Machines/machines.txt"))
             {
-                File.Create(Application.dataPath + "/Machines/machines.txt");
+                File.Create(Application.persistentDataPath + "/Machines/machines.txt");
             }
+            
         }
+
+        textField.text = File.ReadAllText(Application.persistentDataPath + "/Machines/machines.txt");
+    }
+
+    public void Update()
+    {
+        location.text = "location: " + Application.persistentDataPath;
     }
 
     public void Clear()
@@ -35,7 +44,8 @@ public class InsertDescription : MonoBehaviour
     public void TryInsert()
     {
         
-        string desc = File.ReadAllText(Application.dataPath + "/Machines/machines.txt") + textField.text;
+        string desc = File.ReadAllText(Application.persistentDataPath + "/Machines/machines.txt") + textField.text;
+        
         try
         {
             try
@@ -43,8 +53,8 @@ public class InsertDescription : MonoBehaviour
                 LoadMachine(desc);
                 
                 textField.text = "";
-
-                SaveMachine.WriteIt(Application.dataPath + "/Machines/machines.txt", desc);
+                
+                SaveMachine.WriteIt(Application.persistentDataPath + "/Machines/machines.txt", desc);
             }
             catch(Exception e)
             {

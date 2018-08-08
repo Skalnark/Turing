@@ -74,11 +74,11 @@ public class MachineGear : MonoBehaviour
         processButton = GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>();
         stateDisplay = GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>();
 
-        if(File.Exists(Application.dataPath + "/Machines/machines.txt"))
-            LoadAllMachines(File.ReadAllText(Application.dataPath + "/Machines/machines.txt"));
+        if(File.Exists(Application.persistentDataPath + "/Machines/machines.txt"))
+            LoadAllMachines(File.ReadAllText(Application.persistentDataPath + "/Machines/machines.txt"));
         else
         {
-            File.Create(Application.dataPath + "/Machines/machines.txt");
+            File.Create(Application.persistentDataPath + "/Machines/machines.txt");
         }
         LoadOptions();
         LoadMachine();

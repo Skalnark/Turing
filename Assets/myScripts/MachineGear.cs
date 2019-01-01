@@ -80,8 +80,15 @@ public class MachineGear : MonoBehaviour
         {
             File.Create(Application.persistentDataPath + "/Machines/machines.txt");
         }*/
-        TextAsset description = Resources.Load("machines") as TextAsset;
-        LoadAllMachines(description.text);
+
+        if(!Directory.Exists(Application.persistentDataPath + "\\Machines"))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "\\Machines");
+
+            SaveMachine.WriteIt(Application.persistentDataPath + "\\Machines\\machines.txt", Constants.DEFAULTDESCRIPTIONS());
+        }
+
+        LoadAllMachines(File.ReadAllText(Application.persistentDataPath + "\\Machines\\machines.txt"));
         LoadOptions();
         LoadMachine();
     }
@@ -273,12 +280,18 @@ public class MachineGear : MonoBehaviour
                 }
             }
 
-
-            string[] finalStates = desc[2].Split(',');
-
-            foreach(string s in finalStates)
+            if (desc[2].Contains(","))
             {
-                states[int.Parse(s)].DefineIdentity(Constants.FINAL);
+                string[] finalStates = desc[2].Split(',');
+
+                foreach (string s in finalStates)
+                {
+                    states[int.Parse(s)].DefineIdentity(Constants.FINAL);
+                }
+            }
+            else
+            {
+                states[int.Parse(desc[2])].DefineIdentity(Constants.FINAL);
             }
 
             states[int.Parse(desc[1])].DefineInitial();

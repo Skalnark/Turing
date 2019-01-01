@@ -5,6 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
+    path: Assets/homeScene.unity
+    guid: d83619d49422497498c658ebd3d5eb0b
+  - enabled: 0
     path: Assets/mainScene.unity
     guid: 6f2e30f75d185504eb6fd58c589be584
+  - enabled: 0
+    path: Assets/InsertDescriptionScene.unity
+    guid: 94c533cf3a8a0644992e1c7941f5b59b
+  - enabled: 1
+    path: Assets/homeSceneAndroid.unity
+    guid: 639de1ac9195a344687ec16d6e772c6d
+  - enabled: 1
+    path: Assets/mainSceneAndroid.unity
+    guid: 4221ba3fc063a6243bf67f6296414585
+  - enabled: 1
+    path: Assets/InsertDescriptionSceneAndroid.unity
+    guid: 55adaf1cf8266564ca4f03cb75e23e10
+  m_configObjects: {}

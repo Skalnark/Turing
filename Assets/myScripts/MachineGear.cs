@@ -52,8 +52,8 @@ public class MachineGear : MonoBehaviour
     
     private TextMesh stateDisplay;
 
-    private Light stepButtonLight;
-    private Light startButtonLight;
+    private Image stepButtonLight;
+    private Image startButtonLight;
 
     private IEnumerator currentStopCoroutine;
     private IEnumerator currentProccessing;
@@ -69,17 +69,19 @@ public class MachineGear : MonoBehaviour
         tm = GetComponent<TuringMachine>();
         inputField = GameObject.FindGameObjectWithTag("input").GetComponent<InputField>();
         startMachineButton = GameObject.FindGameObjectWithTag("startMachineButton").GetComponent<Button>();
-        stepButtonLight = GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Light>();
-        startButtonLight = GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Light>();
+        stepButtonLight = GameObject.FindGameObjectWithTag("StepButtonLight").GetComponent<Image>();
+        startButtonLight = GameObject.FindGameObjectWithTag("StartButtonLight").GetComponent<Image>();
         processButton = GameObject.FindGameObjectWithTag("processButton").GetComponent<Button>();
         stateDisplay = GameObject.FindGameObjectWithTag("stateDisplay").GetComponent<TextMesh>();
-
-        if(File.Exists(Application.dataPath + "/Machines/machines.txt"))
-            LoadAllMachines(File.ReadAllText(Application.dataPath + "/Machines/machines.txt"));
+        /*
+        if(File.Exists(Application.persistentDataPath + "/Machines/machines.txt"))
+            LoadAllMachines(File.ReadAllText(Application.persistentDataPath + "/Machines/machines.txt"));
         else
         {
-            File.Create(Application.dataPath + "/Machines/machines.txt");
-        }
+            File.Create(Application.persistentDataPath + "/Machines/machines.txt");
+        }*/
+        TextAsset description = Resources.Load("machines") as TextAsset;
+        LoadAllMachines(description.text);
         LoadOptions();
         LoadMachine();
     }
@@ -102,7 +104,7 @@ public class MachineGear : MonoBehaviour
     public void ProcessState()
     {
         inputField.interactable = false;
-        stepButtonLight.intensity = 0;
+        stepButtonLight.color = Color.gray;
         processButton.interactable = false;
         startMachineButton.interactable = false;
 
@@ -156,12 +158,10 @@ public class MachineGear : MonoBehaviour
         dd.interactable = false;
 
         processButton.interactable = false;
-        stepButtonLight.intensity = 0;
+        stepButtonLight.color = Color.gray;
         startMachineButton.interactable = false;
-
+        
         startButtonLight.color = Color.blue;
-
-        startButtonLight.GetComponent<Light>().color = Color.green;
 
         ArrayList initial = new ArrayList();
 
@@ -177,7 +177,7 @@ public class MachineGear : MonoBehaviour
     public IEnumerator StartProcessing(ArrayList result)
     {
         
-        yield return new WaitForSeconds(speed);
+        yield return new WaitForSeconds(speed/2);
         if ((bool)result[0])
         {
             if (currentProccessing != null) StopCoroutine(currentProccessing);
@@ -191,10 +191,11 @@ public class MachineGear : MonoBehaviour
             currentStopCoroutine = tm.StopMachine(tm.StateByIndex((int)result[1]));
             
             startButtonLight.color = Color.red;
-            startButtonLight.GetComponent<Light>().intensity = 2.5f;
 
             StartCoroutine(currentStopCoroutine);
         }
+
+        yield return new WaitForSeconds(speed / 2);
     }
 
     public void LoadAllMachines(string description)
@@ -271,7 +272,15 @@ public class MachineGear : MonoBehaviour
                     }
                 }
             }
-            states[int.Parse(desc[2])].DefineIdentity(Constants.FINAL);
+
+
+            string[] finalStates = desc[2].Split(',');
+
+            foreach(string s in finalStates)
+            {
+                states[int.Parse(s)].DefineIdentity(Constants.FINAL);
+            }
+
             states[int.Parse(desc[1])].DefineInitial();
 
             names.Add(machineName);
@@ -294,9 +303,10 @@ public class MachineGear : MonoBehaviour
 
     public IEnumerator WaitMachine(float time)
     {
-        yield return new WaitForSeconds(time);
         processButton.interactable = true;
-        stepButtonLight.intensity = 2.5f;
+        stepButtonLight.color = Color.cyan;
+
+        yield return new WaitForSeconds(time);
     }
 
     public void Stop()
@@ -326,9 +336,9 @@ public class MachineGear : MonoBehaviour
         startMachineButton.interactable = true;
         processButton.interactable = true;
 
-        stepButtonLight.intensity = 2.5f;
+        stepButtonLight.color = Color.cyan;
 
-        startButtonLight.color = Color.green;
+        startButtonLight.color = Color.red;
 
         LoadMachine();
     }

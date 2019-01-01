@@ -132,7 +132,7 @@ public class TuringMachine : MonoBehaviour
                 {
                     index = df.getNextState();
                     Utils.WriteOnDisplay("stateDisplay", index + "");
-                    if (df.getOutput() == 'Ø')
+                    if (df.getOutput() == 'v')
                     {
                         try
                         {
@@ -156,12 +156,12 @@ public class TuringMachine : MonoBehaviour
             }
             else
             {
-                DeltaFunction df = state.LookForFunction('Ø');
+                DeltaFunction df = state.LookForFunction('v');
                 if (df != null)
                 {
                     index = df.getNextState();
                     Utils.WriteOnDisplay("stateDisplay", index + "");
-                    if (df.getOutput() == 'Ø')
+                    if (df.getOutput() == 'v')
                     {
                         try
                         {

@@ -45,19 +45,3 @@
 #Implementation of the 6-states busy beaver machine. 
 }
 
-{
-	Binary counter#
-	01#
-	0#
-	0#
-	def
-		0, 0, R, 0;
-		1, 1, R, 0;
-		Ø, Ø, L, 1;
-	def
-		1, 0, L, 1;
-		0, 1, R, 0;
-		Ø, 1, R, 0;
-	#
-	starting with 0...
-}
